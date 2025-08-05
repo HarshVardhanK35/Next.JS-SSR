@@ -422,9 +422,9 @@ server.listen(8000, () => {
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
  * 
  * * HYDRATION
- *    - which adds back the interactivity and event-handlers that were lost..
- *        - when static-HTML was server-side-rendered
- * [as rendering server-side HTML remove every interactivity]
+ *  - which adds back the interactivity and event-handlers that were lost..
+ *    - when static-HTML was server-side-rendered
+ * [as rendering server-side HTML does not contain interactivity]
  * 
  *               REACT - COMPONENT - TREE
  *                |                   |
@@ -461,7 +461,7 @@ server.listen(8000, () => {
  * ---
  * - now hydration.. adds back the interactivity to rendered HTML!
  *    - as server-side-rendering removes interactivity but only generates MARKUP
- * [that interactivity that was lost while server-side rendering react-app]
+ * [interactivity that was lost while server-side rendering react-app]
  * [so we need hydration to return that lost interactivity again to rendered HTML]
  * 
  * - we get static HTML and JS also to client from server!
