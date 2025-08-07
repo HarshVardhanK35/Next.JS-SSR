@@ -610,243 +610,300 @@ export default function Page() {
  * - each page inside a folder is a SERVER comp
  * [which is default a server comp.. as it has to be rendered on server]
  * 
+ * [code]
+ * ------
+export default async function Page() {
+  const res = await fetch("https://jsonplaceholder.typicode.com/users");
+  const data = await res.json();
+  console.log(data)               // - this is logged inside local-terminal
+
+  return (
+    <div>
+      <h1>Cabins Page</h1>
+      <ul>
+        {data.map((user) => (
+          <li key={user.id}>{user.name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+ * 
+ * - used fetch function to fetch data from Json-PlaceHolder! 
+ * "https://jsonplaceholder.typicode.com/users"
+ * 
+ * - diff with react:
+ *    - never used "async" keyword directly on comp's fun
+ * 
+ * - when logged user-data from API to console
+ *    - it returned output inside local-terminal 
+ * [which resembles that we are working on server-side instead on client-side] 
+ * 
+ * - therefore data fetched from server and cached
+ * [which avoids re-fetching of same data]
+ * 
+ * $ NOTE
+ * - result will be logged only if we requested that URL's page inside browser
  * 
  * 
+ * ! 13. Adding Interactivity With Client Components
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * (Build: counter client component)
+ * - as every file is a server comp inside NextJS
+ *    - that is why we cannot use react-hooks inside these comp
+ * 
+ * - we have to transform server-comp into a client-comp
+ *    - so use "use client" on top of any server-comp file which convert that file to client-comp! 
+ * ["use client" a declarative approach]
+ * 
+ * - create a file inside components-fol [by def it is a server comp]
+ *    - convert it so that we can use "react hooks" inside that file!
+ * [code]
+ * ------
+"use client";       // - adding "use client"
+
+import { useState } from "react";
+
+export default function Counter() {
+  const [count, setCount] = useState(0);      // - using "useState"
+
+  function handleIncCount() {
+    setCount((count) => count + 1);
+  }
+  return (
+    <div>
+      <button onClick={handleIncCount}>{count}</button>
+    </div>
+  );
+}
+ * 
+ * - after adding "use client" then only we can use react-hooks inside a server transformed client file!
+ * 
+ * $ OBSERVATION
+ * - if we slower the network inside "Network-Tab" 
+ *    - we can view how hydration is done! 
+ * [initially static-HTML will be rendered but not interactivity.. 
+ *    .. after sometime react-bundle will be downloaded and interactivity comes back]
  * 
  * 
+ * ! 14. Displaying a Loading Indicator
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ * (showing global loading indicator: while pages loading their respective data)
+ * 
+ * - if there is a tons of data to be loaded on a page.. 
+ *    - then showing loading indicator would be a best solution!
+ * 
+ * - Global-Loading Indicator! [a-file-convention]
+ *    - similar to global layout.js file.. 
+ * [these global files are applied to each page in CWD]
+ * 
+ * >>> [global files need not to be imported by code.. inside each page.js]
+ * [they are available for every file >>> global files!]
+ * 
+ * - convention to be followed:
+ *    - name that file as "loading.js"
+ *    - create at root level of project directory!
+ * 
+ * [code]
+ * ------
+export default function Loading() {
+  return <h3>LOADING DATA...</h3>;
+}
+ * 
+ * simply.. 
+ * - this renders output from loading.js file while loading data in background!
+ * 
+ * [BTS]
+ * - BTS, NextJS uses "renderToReadableStream" from react-dom
+ * 
+ * - "loading.js" file activates STREAMING [but will not be sent at once!]
+ *    - [data will be streamed from server to client!]
+ * 
+ * $ SUMMARY
+ * - as this is a global file this works for every file.. 
+ *    - ..no matter how deep it is nested!
  * 
  * 
+ * $ NOTE
+ * - we can also activate streaming for individual components using "SUSPENSE"
+ * 
+ * [ex: if a page has 20+ comp in it and only one of it is fetching data.. 
+ *    .. then whole page would be replaced with output of loading.js file]
+ * [if we don't want this we could use more granular approach >>> with "SUSPENSE"]
  * 
  * 
+ * ! 15. How RSC Works Behind the Scenes (RSC – Part 2)
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ * (Learn: how RSC architecture works BTS [OPTIONAL SECTION] ...
+ *    ...follow this only if wanted to know how RSC works! )
+ * 
+ * ↓ ↑ ← → 
+ * 
+ * ? quick review of RENDERING in react ?
+ * ---
+ * [TRADITIONAL-REACT]
+ *        
+ *            COMPONENTS              A B C >>> [component instances]
+ *                ↓
+ *   + ---------- ↓ ---------- +     
+ *   |            ↓            |        A
+ *   |     TREE OF COMPONENT → → → →  / | \
+ *   |        INSTANCES        |     B  B  C
+ *   |            ↓            |          / \
+ *   |            ↓            |         B   A
+ *   |            ↓ - render   |
+ *   |            ↓            |
+ *   |            ↓            |
+ *   |    REACT ELEMENT TREE   |
+ *   |      [VIRTUAL DOM]      |
+ *   |            ↓            |
+ *   + ---------- ↓ ---------- +
+ *                ↓ - commit to DOM
+ *                ↓
+ *        DOM ELEMENTS (HTML)
+ * 
+ * $ EXPLANATION
+ * - components: A, B, C
+ * - comp. tree: composing comps together to form a UI 
+ *    - we get a tree of comp instances 
+ * 
+ * - rendering 
+ * [rendering means call each comp function..
+ *    .. result of that is REACT ELEMENT]
+ * - rendering comp. tree >>> results in REACT-ELEMENT-TREE
+ *    - called "VIRTUAL DOM"
+ * 
+ * - committing to actual DOM.. 
+ *    - creates necessary DOM elements [visible HTML]
+ * 
+ * ? RSC working behind the scenes ?
+ * ---
+ *        COMPONENT-TREE                      +--=> holes                                       +--=> react elements [RE]
+ *                                           /                                                  |
+ *         +--=> SERVER COMP                |         REACT-SERVER         REACT-CLIENT        /
+ *         |                    |            \                         |                      |
+ *        SC                    |             \     RE                 |                     RE
+ *     /   |   \                |              \  /  |   \             |                  /  |  \
+ *   CC    CC   SC  →  →  →  render  →  →  →    ◯   ◯   RE  →  →  → send to  →  →  →  RE  RE  RE
+ *   |         /  \            SCs                       /  \           CLIENT                 /  \
+ *   |       CC    SC           |                      ◯    RE        |                     RE    RE
+ *   |                          |                                      |               
+ *   +---=> CLIENT COMP               VIRTUAL DOM of SC + TREES of CC           complete VIRTUAL-DOM
+ *        with "use client"                     [RSC- Payload]
  * 
  * 
+ * - COMPONENT TREE contains both SERVER-COMPONENT [SC] and CLIENT-COMPONENT [CC] instances! 
  * 
+ * $ SERVER - 1:
+ * - when react encounters a comp tree that was shown above.. then react will render all SERVER-comp.
+ *    - server comp are rendered on "server" 
  * 
+ * - so rendering a component results in REACT-ELEMENT!
+ *    - these ELEMENTS only contain output from server comp.
  * 
+ * [only info of how DOM of each comp shall look like]
+ * - but these ELEMENTS does not contain code that needed for rendering each comp.
+ *    >>> code of SC has been disappeared!
  * 
+ * ? why ?
+ * ---
+ * - that is why we cannot use state-like logic inside server comp
+ *    [cause logic like useState and useEffect etc., will disappear after rendered]
  * 
+ * - AND these REACT-ELEMENTS have to be sent to client later 
+ *    - that is why every thing needs to be "SERIALIZABLE" [so fun are not "serialized"]
  * 
+ * [there is no way we can send logic like useState and we also cannot keep track of state..
+ *    .. as there was no "FIBER TREE" on server]
+ * 
+ * $ SERVER - 2:
+ * ? what about CLIENT-COMP then ?
+ * ---
+ * - as we are still on SERVER.. so client-comp will not be rendered here!
+ *  
+ * - COMP-TREE on server-side gets a "PLACE-HOLDER" [HOLE] for client
+ *    - "HOLE" where only CLIENT-COMP will only be rendered
+ * 
+ * - HOLES contains serialized PROPS >>> might be passed from SC to CC
+ *    - also contains URL to SCRIPT with component code!
+ * 
+ * - URL points to server which contains comp code
+ * [URL-like reference needed >>> so that client comp can be executed / rendered later!]
+ * 
+ * ? how this script is created then ?
+ * ---
+ * - creating script with comp code and URL pointing to it is "COMPLEX"
+ * 
+ * - so this must be powered by "BUNDLER" that the present framework is using
+ * [this is why it is hard to implement RSC ourselves without a framework]
+ * 
+ * $ IMP
+ * - so we got a tree with a mix of executed and un-executed comp instances!
+ * which is called..
+ *    * RSC PAYLOAD!
+ * 
+ * [a Data Structure]
+ * - RSC payload is: [virtual DOM of all rendered-server-comp +
+ *    - sub trees of un-rendered client-comp]
+ * 
+ * - this DS will be sent to next step..
+ * 
+ * $ NOTE
+ * - client comp will not be rendered on SERVER and we need to pass them on to the client-side
+ *    - info needed: props + code to run components on client
+ * [every placeholder will contain this info]
+ * 
+ * $ CLIENT - 1:
+ * - here RSC payload is "streamed" data from server to client
+ * 
+ * - every client HOLE is transformed into REACT-ELEMENT! 
+ *    - and now we have complete "VIRTUAL-DOM"
+ * 
+ * LASTLY:
+ * - this will be committed to actual DOM
+ * 
+ * $ NOTE
+ * - rendering will be done with RSC arch. in 2 diff environments! [server and client]
+ * 
+ * ? why do we need RSC payload ? why not render SC as HTML ?
+ * ---
+ * [reason]
+ * - react always want to describe UI as "data" and not as already finished HTML
+ * [this is why DS like fiber tree and virtual DOM exists]  
+ * 
+ * - when SC is re-rendered >> a new RSC payload is generated >> sent to client 
+ *    - where react can RECONCILE current tree on CLIENT + with new tree that is coming from server
+ * 
+ * - as a result! 
+ *    - UI state can be preserved when a SC re-renders instead of completely re-generating page as HTML
+ * [if just HTML is sent from server.. then entire HTML would have to replaced with new HTML]  
+ * 
+ * $ CONCLUSION
+ * - UI is not a func of data and state
+ *    that is UI !== fn(data, state)
+ * 
+ * - from this whole process of rendering 
+ *    - we can come to a conclusion that.. 
+ * 
+ * >>> UI === fn(data)(state)
+ * - therefore.. UI is a result of func(data) and later it is func(state)
  * 
  * 
  * 
  * ! 7. RSC vs. SSR: How are They Related? (RSC – Part 3)
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
  * 
- * ! 7. RSC vs. SSR: How are They Related? (RSC – Part 3)
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
  * 
- * ! 7. RSC vs. SSR: How are They Related? (RSC – Part 3)
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
  * 
- * ! 7. RSC vs. SSR: How are They Related? (RSC – Part 3)
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
  * 
- * ! 7. RSC vs. SSR: How are They Related? (RSC – Part 3)
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
  * 
- * ! 7. RSC vs. SSR: How are They Related? (RSC – Part 3)
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
  * 
- * ! 7. RSC vs. SSR: How are They Related? (RSC – Part 3)
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
  * 
  * 
  * 
  * 
  * 
  * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
+ * ! COMPLETED
  * 
  */
