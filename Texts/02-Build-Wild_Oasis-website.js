@@ -437,6 +437,76 @@ export default function RootLayout({ children }) {
  * 
  * ! 7. Improving the Navigation and Root Layout
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ * (optimized navigation and header components by addition of some styles to them)
+ * 
+ * - we have everything already set inside starter files [styles and imports etc.,]
+ * [starter files from JONAS github]
+ * 
+ * 
+ * ! 8. Optimizing Images With Next.js <Image /> Component
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * (images show huge impact on loading speed of a web-app)
+ * 
+ * - optimizing images in Next will be done with Next's own "Image" component
+ * 
+ * [code]
+ * ------
+export default function Logo() {
+  return (
+    <a href="/" className="flex items-center gap-4 z-10">
+      <img src="/logo.png" height="60" width="60" alt="The Wild Oasis logo" />
+      <span className="text-xl font-semibold text-primary-100">
+        The Wild Oasis
+      </span>
+    </a>
+  );
+}
+ * 
+ * - till now we use <img /> tag from HTML to insert an image inside a web-page!
+ * 
+ * [code after optimization]
+ * ---
+import Image from "next/image";
+import Link from "next/link";
+
+export default function Logo() {
+  return (
+    <Link href="/" className="flex items-center gap-4 z-10">
+      <Image src="/logo.png" height="60" width="60" alt="The Wild Oasis logo" />    // - Image comp from Next.JS!
+      <span className="text-xl font-semibold text-primary-100">
+        The Wild Oasis
+      </span>
+    </Link>
+  );
+}
+ * 
+ * >>> Image comp
+ * ---
+ * 1:
+ * - automatically serve correctly sized images in modern formats [ex: webp]
+ * 
+ * 2:
+ * - prevents layout shifts
+ *    - it forces us to specify exact height and width
+ * 
+ * 3: 
+ * - it automatically lazy loads images only when images enter the viewport
+ * 
+ * $ NOTE
+ * - Image comp requires height and width specified 
+ * [without these properties we get an error]
+ * 
+ * - we can also statically import image and by doing this..
+ *    - we do not have to specify the height and width it takes default image sizes
+ *    - also we can specify quality on scale of 1-100 [least reduces the quality of image] 
+ * 
+ * $ IMP
+ * - but for now use the above way of using image into Image comp as shown in above code
+ * 
+ * 
+ * ! 9. Building the Home Page
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * (Home page: page.js file inside root folder)
  * 
  * 
  * 
@@ -457,13 +527,6 @@ export default function RootLayout({ children }) {
  * 
  * 
  * 
- * 
- * ! 2. Project Planning: "The Wild Oasis" Customer Website
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * ! 2. Project Planning: "The Wild Oasis" Customer Website
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
  * 
  * 
  * ! 2. Project Planning: "The Wild Oasis" Customer Website

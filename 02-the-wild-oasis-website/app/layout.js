@@ -1,5 +1,4 @@
 import Logo from "./_components/Logo";
-import Navigation from "./_components/Navigation";
 
 import { Josefin_Sans } from "next/font/google";
 
@@ -9,6 +8,8 @@ const josefin = Josefin_Sans({
 });
 
 import "./_styles/globals.css";
+import Navigation from "./_components/Navigation";
+import Header from "./_components/Header";
 
 export const metadata = {
   // title: "The Wild Oasis",
@@ -25,11 +26,12 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body
         className={`${josefin.className} bg-primary-950 text-primary-100
-       min-h-screen`}
+       min-h-screen flex flex-col`}
       >
-        <Logo />
-        <Navigation />
-        <main>{children}</main>
+        <Header />
+        <div className="flex-1 px-8 py-12">
+          <main className="max-w-7xl mx-auto ">{children}</main>
+        </div>
       </body>
     </html>
   );
