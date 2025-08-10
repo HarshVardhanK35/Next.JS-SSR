@@ -734,245 +734,55 @@ export default function Page() {
 // >>> folder and files structure
 ---
 --- app
+  - page.js       - HOME  {"/"}
+  - layout.js     - GLOBAL LAYOUT
+  - loading.js    - GLOBAL LOADER
 
-// COMMON_CODE
   --- [_components]-fol
-    -
+    - 
   --- [_lib]-fol
-    -
+    - 
   --- [_styles]-fol
     - global.css
 
-// ROUTES
-  --- [about]-fol
-    - page.js
-  --- [cabins]-fol
-    - page.js
+  --- [about]-fol     
+    - page.js         {"/about"}
+
+  --- [cabins]-fol    
+    - page.js         {"/cabins"}
   
-  --- [account]-fol
-    - page.js
-    --- [reservations]-fol
-      - page.js
-    --- [profile]-fol
-      - page.js
-  
-// GLOBALS
-  --- layout.js     - GLOBAL LAYOUT
-  --- loading.js
-  --- page.js       - HOME
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * ! 2. Project Planning: "The Wild Oasis" Customer Website
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * ! 2. Project Planning: "The Wild Oasis" Customer Website
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * ! 2. Project Planning: "The Wild Oasis" Customer Website
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
+  --- [account]-fol   
+    - page.js         {"/account"}
+    --- [reservations]-fol    
+      - page.js               {"/account/reservations"}
+    --- [profile]-fol         
+      - page.js               {"/account/profile"}
+ * 
+ * 
+ * - so we are adding a layout to one URL segment 
+ *    - then we have to create GLOBAL layout.js inside "/account" segment
+ * 
+ * [code]
+ * ------
+// >>> account/layout.js
+---
+import SideNavigation from "../_components/SideNavigation";
+
+export default function Layout({ children }) {                                  // - receives children from page.js of same level folders 
+    return <div className="grid grid-cols-[16rem_1fr] h-full gap-12">
+        <div>
+            <SideNavigation />
+        </div>
+        <div className="py-1">{children}</div>          // - using {children} here to show the content!
+    </div>
+}
+ * 
+ * - these two divs remain at side-by-side inside /account web-page! 
+ * 
+ * 
+ * !COMPLETED!
+ * 
+ * next section.. 
+ *    => data-fetching, caching and rendering
  * 
  */
