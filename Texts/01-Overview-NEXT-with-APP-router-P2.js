@@ -778,12 +778,12 @@ export default function Loading() {
  * 
  * ? RSC working behind the scenes ?
  * ---
- *        COMPONENT-TREE                      +--=> holes                                       +--=> react elements [RE]
- *                                           /                                                  |
+ *        [COMPONENT-TREE]                  +--=> holes                                        +--=> react elements [RE]
+ *                                          |                                                  |
  *         +--=> SERVER COMP                |         REACT-SERVER         REACT-CLIENT        /
  *         |                    |            \                         |                      |
  *        SC                    |             \     RE                 |                     RE
- *     /   |   \                |              \  /  |   \             |                  /  |  \
+ *     /   |   \                |                 /  |   \             |                  /  |  \
  *   CC    CC   SC  →  →  →  render  →  →  →    ◯   ◯   RE  →  →  → send to  →  →  →  RE  RE  RE
  *   |         /  \            SCs                       /  \           CLIENT                 /  \
  *   |       CC    SC           |                      ◯    RE        |                     RE    RE

@@ -1,5 +1,5 @@
-// ! 03 Data-Fetching, Caching, Rendering
-// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+// ! 03 Data-Fetching, Caching, Rendering (P-1)
+// -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
 /**
  * ! 1. Section Overview
  * -+-+-+-+-+-+-+-+-+-+-+
@@ -748,242 +748,347 @@ export default async function CabinList() {
     )
 }
  * 
+ * [steps]
  * - separating the data-fetching logic into a separate file
  * - importing that new comp into a file where it is needed!
  * - wrapping it with Suspense a-react-comp
  *      - with a fallback as a prop which takes a comp (which has to be loader/spinner)
  * 
  * 
- * 
- * ! 2. Making Dynamic Pages Static With generateStaticParams
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * ! 2. Making Dynamic Pages Static With generateStaticParams
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * ! 2. Making Dynamic Pages Static With generateStaticParams
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * ! 2. Making Dynamic Pages Static With generateStaticParams
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * ! 2. Making Dynamic Pages Static With generateStaticParams
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * ! 2. Making Dynamic Pages Static With generateStaticParams
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * ! 2. Making Dynamic Pages Static With generateStaticParams
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * ! 2. Making Dynamic Pages Static With generateStaticParams
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * ! 2. Making Dynamic Pages Static With generateStaticParams
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * ! 2. Making Dynamic Pages Static With generateStaticParams
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
+ * ! 7. Dynamic Route Segments: Building the Cabin Page
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ * (whenever we click on individual cabins.. it shall take users to cabin pages)
+ * [code]
+ * ------
+<Link
+  href={`/cabins/${id}`}
+  className="border-l border-primary-800 py-4 px-6 inline-block hover:bg-accent-600 transition-all hover:text-primary-900"
+>
+  Details & reservation &rarr;
+</Link>
+ * 
+ * - this above code navigates users to cabins with their respective pages via cabin IDs
+ * 
+ * - we did not know which cabin-id was associated with which cabin
+ *    - even if we know the cabin-id with each cabin >>> we cannot create folders and page.js for every route with dynamic ID
+ * 
+ * - we cannot know which ID would come inside a URL whenever user clicks on link specified with each cabins
+ * 
+ * >>> in this situation we need to use "DYNAMIC ROUTE SEGMENTS" 
+ * [http://localhost:3000/cabins/106]
+ *                              +---+      +---=> this value isn't pre-determined! 
+ *                                |       / 
+ *                         dynamic segment
+ * 
+ * - as this is the child route of cabins.. 
+ *    - this means we have to create a folder inside /cabins
+ * 
+ * >>> square bracket convention for dynamic-routing
+ *    - create a folder: [cabinId]
+ * as every folder is a new route.. create a page.js file inside it!
+ * 
+ * - inside this page.js file >>> we have to fetch every cabin that is associated with clicked cabin-id
+ *    - so we need to access the dynamically changing ID from the route!
+ * 
+ * - every dynamic route segment has access to a "params" prop
+ *    - when we log that to console we get exactly the name of the dynamic route folder 
+ * 
+ * [code]
+ * ------
+import { getCabin } from "@/app/_lib/data-service";
+import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
+import Image from "next/image";
+
+export default async function Page({ params }) {            // - we get access to "params" as it is a dynamic route segment
+
+  const cabin = await getCabin(params.cabinId)      // - params a prop and an object has key >> "folder name: cabinId" and value >> "cabin's child-route with id"
+
+  const { id, name, maxCapacity, regularPrice, discount, image, description } =
+    cabin;
+  return (
+    <div className="max-w-6xl mx-auto mt-8">
+      <div className="grid grid-cols-[3fr_4fr] gap-20 border border-primary-800 py-3 px-10 mb-24">
+        <div className="relative scale-[1.15] -translate-x-3">
+          <Image                \
+            src={image}          +---=> // - has to be filled with image's dimensions 
+            alt={`Cabin ${name}`} 
+            className="object-cover"    // - as the image we get here is URL from DB but not a statically imported image! 
+            fill                            // - that is why we used "fill" and "object-cover" over this.. which fills parent's dimensions
+          />   
+        </div>
+        <div>
+          <h3 className="text-accent-100 font-black text-7xl mb-5 translate-x-[-254px] bg-primary-950 p-6 pb-1 w-[150%]">
+              Cabin {name}
+          </h3>
+          <p className="text-lg text-primary-300 mb-10">{description}</p>
+
+          <ul className="flex flex-col gap-4 mb-7">
+            <li className="flex gap-3 items-center">
+              <UsersIcon className="h-5 w-5 text-primary-600" />
+              <span className="text-lg">
+                For up to <span className="font-bold">{maxCapacity}</span>{" "}
+                guests
+              </span>
+            </li>
+              <li className="flex gap-3 items-center">
+                <MapPinIcon className="h-5 w-5 text-primary-600" />
+                <span className="text-lg">
+                  Located in the heart of the{" "}
+                  <span className="font-bold">Dolomites</span> (Italy)
+                </span>
+              </li>
+              <li className="flex gap-3 items-center">
+                <EyeSlashIcon className="h-5 w-5 text-primary-600" />
+                <span className="text-lg">
+                  Privacy <span className="font-bold">100%</span> guaranteed
+                </span>
+              </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <h2 className="text-5xl font-semibold text-center">
+            Reserve today. Pay on arrival.
+        </h2>
+      </div>
+    </div>
+  );
+}
+ * 
+ * $ SUMMARY
+ * [http://localhost:3000/cabins/106]
+ *                              +---+                        +---=> we have to make a DYNAMIC-ROUTE-SEGMENT
+ *                                |                         /
+ *                                +---=> as this part is UNKNOWN!
+ * 
+ * - so to create "DYNAMIC-ROUTE-SEGMENT" use square-bracket-convention inside "/cabins" folder OR route
+ * - which ever page.js that was associated inside this folder gets access to "params" prop.. 
+ *    - which has access to dynamic-ID which changes whenever user clicks on different cabins
+ * - "params" read the value: ID.. from respective page URL
+ *    - and stores inside key: folderName that was provided while creating "dynamic-route-segment"
+ * 
+ * >>> NEXT.JS is full of conventions and REACT.JS is full of functions and other / 3rd party libraries!
+ * 
+ * 
+ * ! 8. Generating Dynamic Metadata
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ * (generating dynamic metadata on the name of each cabin)
+ * 
+ * - static metadata
+ * [code] 
+ * ------
+export const metadata = {
+  title: "Cabin",
+};
+ * 
+ * $ NOTE 
+ * - but we need dynamic data shall get cabinId on every user-click
+ * 
+ * - dynamic metadata
+ * [code]
+ * ------
+export async function generateMetadata({ params }) {
+  const cabin = await getCabin(params.cabinId);         // #1
+  return {
+    title: `Cabin-${cabin.name}`,
+  };
+}
+ * 
+ * - as it is dynamic.. this fn gets access to "params" prop 
+ *    - which in turn reads id from URL: "http://localhost:3000/cabins/106"
+ * 
+ * 1:
+ * - NEXT.JS waits for data to be fetched from supabase!
+ *    - before STREAMING UI to client
+ * 
+ * 
+ * ! 9. Error Handling: Setting Up Error Boundaries
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ * (Learn: Global-Error-Boundary >> whenever developers face an error while in development)
+ * [code]
+ * ------
+<li className="flex gap-3 items-center">
+  <UsersIcon className="h-5 w-5 text-primary-600" />
+  <span className="text-lg">
+    For up to <span className="font-bold">{maxCapacity}</span>{" "}   // #1
+    guests
+  </span>
+</li>
+ * 
+ * 
+ * [FOR-EXAMPLE]
+ * 1: 
+ * - INSIDE THE LINE.. 
+ * ~ For up to <span className="font-bold">{maxCapacity}</span>{" "}
+ * 
+ * - if developers thought max-capacity value has to be get from a capacity object
+ *    - and if they do { capacity.max }
+ * 
+ * - then it can throw an error 
+ * [where capacity.max does not exist but only maxCapacity is destructured]
+ *    - that raise while in development!
+ * 
+ * >>> we need to set-up a GLOBAL-ERROR-BOUNDARY
+ *    - this will WRAP entire application into react-error boundary!
+ * [similar to manual set-up of error-boundary]
+ * 
+ * >>> so we have to use new NEXT.JS convention to set-up error-boundary!
+ * [steps]
+ * - create a convention file called "error.js" inside app-folder
+ *    inside root app folder / error.js
+ * 
+ * [code]
+ * ------
+"use client";   // - this makes client component
+
+export default function Error({ error, reset }) {   // #1
+  return (
+    <main className="flex justify-center items-center flex-col gap-6">
+      <h1 className="text-3xl font-semibold">Something went wrong!</h1>
+      <p className="text-lg">ERROR: {error.message}</p>                   // - "message" from "error" object used here!
+
+      <button
+        className="inline-block bg-accent-500 text-primary-800 px-6 py-3 text-lg"
+        onClick={reset}   
+      >             \
+        Try again    +---=> // - reset fn: in this case this does not do anything >> so we can add navigation onclick takes devs to cabins or another route! 
+      </button>
+    </main>
+  );
+}
+ * 
+ * 1: 
+ * - this convention "error.js" component gets access to (error: object) and (reset: fn to reset the error boundary)
+ * 
+ * - this works for every component inside an application!
+ *    - this works for every error and exceptions which may happen inside an app [but only in rendering]
+ * [this means any error inside callback fns will not be caught by this type of error boundary.. 
+ *    .. So only rendering errors will be caught right here]
+ * 
+ * $ NOTE
+ * - this "error.js" boundary does not catch errors that might happen in the root layout.js file (app/layout.js)
+ * - in order to catch errors inside root-layout.js [we need to create file called global-error.js]
+ *    - that will then actually replace the entire layout.
+ * >>> no need of this file: "global-error.js"
+ * 
+ * $ IMP
+ * - error boundary need to be a client component! so use "use client" directive
+ * 
+ * $ SUMMARY
+ * - we could have multiple similar error-boundaries in every route-folder 
+ *    - or even deeper inside a folder structure! [like nested error-boundaries]
+ * 
+ * * know more about conventions
+ * => https://nextjs.org/docs/app/getting-started/project-structure
+ * - use this URL to know more about every convention that might need while in development!
+ * 
+ * next lecture...
+ * - when user enter a URL that provide an error
+ *    - NOT FOUND ERROR
+ * => Learn: in next lecture!
+ * 
+ * 
+ * ! 10. Error Handling: "Not Found" Errors
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
+ * (Learn: how to handle "Not Found Errors" and how to create one!)
+ * - when users tries to access a URL which is not defined / registered inside an application
+ * 
+ * # 1:   
+ * - for ex: when users wants to navigate "/app/test" which is not-defined! 
+ * 
+ * - so again create a new file called "not-found.js" inside root folder (inside /app)
+ *    - which listens to every not-found error inside every folder and file!
+ *  
+ * [/app/not-found.js]
+ * ---
+import Link from "next/link";
+
+export default function NotFound() {
+  return (
+    <main className="text-center space-y-6 mt-4">
+      <h1 className="text-3xl font-semibold">
+        This page could not be found :(
+      </h1>
+      <Link
+        href="/"
+        className="inline-block bg-accent-500 text-primary-800 px-6 py-3 text-lg"
+      >
+        Go back home
+      </Link>
+    </main>
+  );
+}
+ * 
+ * # 2:
+ * - when users navigate to cabins that were not found
+ *    - with URL: "http://localhost:3000/cabins/99999999"
+ * [here cabin with id: "99999999" is not found.. cause we didn't create that 99999999-cabin]
+ * 
+ * - but we got an error displayed on webpage which is... 
+ *    - ERROR: Cannot read properties of null (reading 'name')
+ * [but we need "This page could not be found :("] >>> [which was created by dev]
+ * 
+ * [so]
+ * >>> in NEXT.JS.. not-found page can be shown in 2 ways:
+ *    1: when URL does not exist [already discussed]
+ *    2: manually triggering dev-created page by calling "notFound()" fun provided by "next/navigation"
+ * 
+ * [steps]
+ * - use fn which is used to fetch data.. getCabin(id) fn 
+ *    - inside it whenever there is an error: call "notFound" inside error-block! 
+ * 
+ * [getCabin-code]
+ * ---
+import { notFound } from "next/navigation";
+
+// GET
+------
+export async function getCabin(id) {
+  const { data, error } = await supabase
+    .from("cabins")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  // For testing
+  --------------
+  // await new Promise((res) => setTimeout(res, 1000));   // - this is for slowing down the response!
+
+  if (error) {
+    console.error(error);
+    notFound();
+  }
+  return data;
+}
+ * 
+ * - then we get "This page could not be found :(" >>> which dev-defined error but not NEXT.JS defined error!
+ * 
+ * $ BONUS
+ * - we can also define not-found.js file inside [cabinId] dynamic-route-segment folder!
+ *    - used same code but changed HREF-URL and text in it.. 
+ * [code]
+ * ------
+import Link from "next/link";
+
+export default function NotFound() {
+  return (
+    <main className="text-center space-y-6 mt-4">
+      <h1 className="text-3xl font-semibold">
+        This cabin could not be found :(
+      </h1>
+      <Link
+        href="/cabins"            // - changes
+        className="inline-block bg-accent-500 text-primary-800 px-6 py-3 text-lg"
+      >
+        Back to all cabins    // - changes
+      </Link>
+    </main>
+  );
+}
+ * 
+ * 
+ * finished..
+ *    first part of the section!
  * 
  * 
  * 
