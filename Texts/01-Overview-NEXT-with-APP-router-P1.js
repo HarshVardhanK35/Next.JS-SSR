@@ -30,8 +30,8 @@
  * - while using PHP, word-press
  * - back then in old days.. websites were rendered on server-side and then sent to browser!
  * 
- *          render             HTML CSS     <=----+     |
- *              webpage -----     JS        +----=>     | ... BROWSER
+ *          render a           
+ *          webpage -----   HTML + CSS + JS   +----=> | ... BROWSER
  * 
  * [MODERN]
  * - so to make websites more dynamic and interactive
@@ -43,7 +43,7 @@
  *              +---=>  |
  * 
  * >>> [MODERN-way-SERVER-SIDE-RENDERING]
- *      - using next.js remix
+ *      - using next.js and remix
  * - these are the blend of both server-side and client-side 
  * 
  * ? differences between CSR and SSR
@@ -53,44 +53,48 @@
  *          ex: we use REACT.JS
  * ? [CONS]
  *      - SLOWER INITIAL PAGE LOADING..
- *          - LARGE js bundle needs to be downloaded before app starts!
- *          - data is fetched after components MOUNTING!
- *          -  
+ *          - LARGE javascript bundle needs to be downloaded before app starts!
+ *          - data is fetched after components MOUNTING! 
+ * 
  *      - 'SEO' will be problematic..
  *          - search engines may find blank page while indexing pages.. 
  *          [cause >>> content is not rendered until JS is executed and data is fetched!]
- * 
+ * + ----------------------------------- +
  * ? [PROS]
  *      - HIGHLY INTERACTIVE..
  *          - all code and content has loaded already!
- *          - 
+ * 
  *      - SPA
  *          - perfect for building highly interactive web-applications 
- *          - 
+ *  
  *      - apps that don't need SEO.. 
+ *        (then CSR is sol) 
  *          - apps which are used "internally (inside a company)" as tools 
  *          - apps that entirely hidden behind a login! 
- *          [where SEO is not a concern]..!
+ *            [where SEO is not a concern]..! 
  * 
+ * + ======================================================================================================== +
  * >>> [SSR]
  *      - HTML is generated on a web-server [then it sends that generated HTML to client.. on req]
- *      [work of rendering from user's to dev's computer.. computer that is under dev control]
+ *        [work of rendering from user's to dev's computer.. computer that is under dev control]
  *          ex: use NEXT.JS
  * ? [PROS]
  *      - FASTER INITIAL PAGE LOADING..
  *          - LESS js needs to be downloaded and executed
  *          - data is fetched before HTML is rendered [as it is generated on server]
- *          - 
+ * 
  *      - 'SEO' FRIENDLY..
  *          - content is easier for search engines to index!
- *          - 
+ *  
  *      - CONTENT DRIVEN websites where SEO is ESSENTIAL:
  *          - such as: e-Commerce, blogs, news, marketing websites etc.,
+ * + ----------------------------------- +
  * ? [CONS]
  *      - LESS INTERACTIVE.. 
  *          - pages might be downloaded on DEMAND and require full page reloads (may not have SPA)
  *          [navigate page-page >> require server to render a new page each time >> leads full page reloading]
  * 
+ * + ======================================================================================================== + 
  * >>> [TYPES]
  * ? TWO types of SSR ?
  * 
@@ -99,12 +103,11 @@
  * [once dev finished developing site.. they export into static HTML, CSS, JS files.. 
  *      which can be deployed on to web-server.. this server will not re-generate mark-up every-time..
  *          server simply sends what was generated once by the dev in beginning!]
- *
- * - DYNAMIC rendering
- *      - server generates a new HTML each time a new request hits 
- *      [means.. generates new pages for each user] 
- *      - this approach considers TRUE server-side-rendering
  * 
+ * - DYNAMIC rendering
+ *      - server generates a new HTML.. each time a new request hits 
+ *        [means.. generates new pages for each user / user-req] 
+ *      - this approach considers TRUE server-side-rendering
  * 
  * $ NOTE
  * - if SEO concerns.. SSR has to be chosen!
@@ -130,8 +133,8 @@
  * ? what about interactivity in SSR ?
  * - the whole website that is sent to client contains JS bundle
  * - that bundle gets downloaded and executed 
- * - and then happens.. 
- *                  * HYDRATION PROCESS!
+ * - and then happens a process called.. 
+ *                  * HYDRATION !
  * 
  * * HYDRATION
  * - where STATIC HTML becomes interactive by addition of JS!
@@ -144,13 +147,13 @@
  * => "https://github.com/jonasschmedtmann/ultimate-react-course/tree/main/20-manual-ssr"
  * 
  * - also create a new file: "server.js"
- *      - where start creating new NODEJS web server!
+ *    - where start creating new NODEJS web server!
  * 
- * - also install node.js
- *      - check version: node -v
+ * - also install "node.js"
+ *    - check version: node -v
  * 
  * - also create a package.json file
- *      - open TERMINAL => write: "npm init -y" 
+ *    - open TERMINAL => write: "npm init -y" 
  * [which will generate package.json]
  * 
  * [code]
@@ -426,21 +429,21 @@ server.listen(8000, () => {
  *    - when static-HTML was server-side-rendered
  * [as rendering server-side HTML does not contain interactivity]
  * 
- *               REACT - COMPONENT - TREE
- *                |                   |
- *                |                   |     REACT-BUNDLE
- * [SERVER]       ⬇                   |   is sent as well..
- *           SERVER-SIDE              |       ⬇
- *          RENDERED HTML             |       ⬇
+ *              |REACT - COMPONENT - TREE|
+ *                ⬇                   ⬇
+ *                ⬇                   ⬇     REACT-BUNDLE
+ * [SERVER]       ⬇                   ⬇   is sent as well..
+ *           SERVER-SIDE              ⬇       ⬇
+ *          RENDERED HTML             ⬇       ⬇
  *                ⬇                   ⬇       ⬇
  * ----------------------------------------------------
- * Content        |                   |
- * Painting --- RENDERED              |
+ * Content        ⬇                   ⬇
+ * Painting --- RENDERED              ⬇
  *              webpage-DOM  =>  HYDRATION  + JS  
- *                |                   |
- * [CLIENT]       |                   |
- *                |                   |
- *                ⬇     resulted      ⬇
+ *                ⬇                   ⬇
+ * [CLIENT]       ⬇                   ⬇
+ *                ⬇                   ⬇
+ *                ⬇     =result=      ⬇
  *              INTERACTIVE - REACT - APP
  * 
  * $ SUMMARY
@@ -448,7 +451,7 @@ server.listen(8000, () => {
  * - a react-app with react-component-tree that we want to render on server
  * [this application is written using NEXT.JS]
  * 
- * - this app will be rendered as server-side rendered HTML markup!
+ * - this app will be rendered as server-side rendered HTML markup
  * [this HTML will be sent to client]
  * 
  * - sent HTML from server will be rendered on browser as a webpage
@@ -460,21 +463,21 @@ server.listen(8000, () => {
  * >>> HYDRATION
  * ---
  * - now hydration.. adds back the interactivity to rendered HTML!
- *    - as server-side-rendering removes interactivity but only generates MARKUP
+ *    - as server-side-rendering removes interactivity but only generates HTML-MARKUP
  * [interactivity that was lost while server-side rendering react-app]
- * [so we need hydration to return that lost interactivity again to rendered HTML]
+ * [we need 'hydration' to return that lost interactivity again to server-side rendered HTML]
  * 
  * - we get static HTML and JS also to client from server!
  *    - this JS need to be downloaded! [which is inside REACT-BUNDLE]
  * 
- * >>> this downloaded bundle will HYDRATE the RENDERED-STATIC-DOM 
+ * >>> this downloaded bundle will "HYDRATE" the RENDERED-STATIC-DOM 
  * 
  * >>> HYDRATION PROCESS.. 
- *    - now REACT will build the component-tree on client and .. 
- *        - compares it to actual server-side-rendered DOM [currently on browser-page]
+ * - now REACT will build the component-tree on client and .. 
+ *    - compares it to actual server-side-rendered DOM [currently on browser-page]
  * 
- *    - if they match [checks if they produced exact same DOM]
- *        - then.. react will ADOPT existing DOM.. attaches all events and fires-off existing EFFECTS!
+ * - if they match [checks if they produced exact same DOM]
+ *    - then.. react will ADOPT existing DOM.. attaches all events and fires-off existing EFFECTS!
  * [therefore HYDRATION continues the server-side rendering]
  * 
  * $ NOTE

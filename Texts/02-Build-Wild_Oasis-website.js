@@ -76,16 +76,16 @@
  * >>> TECH decisions
  * ---
  * - framework:             NEXT.JS
- * - UI state management:   context API
- * - DB / API:              supabase    [as we're gonna use data from prior react-project]
- * - styling:               tailwind CSS
+ * - UI state management:   Context API
+ * - DB / API:              Supabase    [as we are going to use data from prior react-project]
+ * - styling:               Tailwind CSS
  * 
  * 
  * ! 3. Project Organization
  * -+-+-+-+-+-+-+-+-+-+-+-+-+
  * 
- * 1: 
- * >>> organizing components [colocate]
+ * 1: [IGNORE >>>]
+ * >>> organizing components [colocate] 
  * ---
  * - whenever a component is related a page.. then place that comp inside that respective folder
  * ex: if "Counter" from "comp/Counter" is used inside "cabins/page" ...
@@ -101,9 +101,9 @@
  *      - then components folder may get a separate route as well [where every useful component exists]
  * [if it contains page.js inside "components" folder.. then it would be a problem]
  * 
- * - so making components fol a private folder so that it will be opt out components fol 
+ * - so making components fol a private folder so that it will be OPTED- OUT  
  *      - to make it private.. use "underscore" before folder name [_components] 
- * [hence no route will be created by the name of components fol]
+ * [hence no route will be created by the name of this _fol >>> if it contains "page.js" file]
  * 
  * $ NOTE
  * - Therefore, we have every reusable logic inside _components fol and also opted it out from creating a route!
@@ -143,7 +143,7 @@ export default function RootLayout({ children }) {
 }
  * 
  * - we can use colors provided by TAILWIND
- *      - but using colors provided by JONAS 
+ *      - but we are using colors provided by instructor: JONAS 
  * [which would give look for website]
  * 
  * - using user-defined colors instead pre-defined colors by TAILWIND
@@ -305,7 +305,7 @@ export const metadata = {
  * 
  * >>> specifying a favicon:
  * ---
- * - to add a favicon for an application we have to use icon.png
+ * - to add a favicon for an application we have to use "icon.png"
  *    - convention to be followed in Next.JS [where file name must be "icon" but file extension can be anything!]
  * 
  * - just adding icon.png inside root folder is enough
@@ -484,11 +484,9 @@ export default function Logo() {
  * ---
  * 1:
  * - automatically serve correctly sized images in modern formats [ex: webp]
- * 
  * 2:
  * - prevents layout shifts
  *    - it forces us to specify exact height and width
- * 
  * 3: 
  * - it automatically lazy loads images only when images enter the viewport
  * 
@@ -753,6 +751,7 @@ export default function Page() {
   
   --- [account]-fol   
     - page.js         {"/account"}
+    
     --- [reservations]-fol    
       - page.js               {"/account/reservations"}
     --- [profile]-fol         

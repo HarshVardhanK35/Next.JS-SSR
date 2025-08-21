@@ -7,7 +7,7 @@
  * 
  * * NEXT.JS
  * - according to VERCEL.. 
- *    - NEXT is react FRAMEWORK for the web
+ *    => "NEXT" is react FRAMEWORK for the web
  * 
  * - actually NEXT is META-FRAMEWORK which is built on top of REACT
  *    - means we still use comp, props, react-hooks etc., that is all things in REACT
@@ -15,8 +15,8 @@
  * 
  * - NEXT adds set of conventions and best practices about common things
  *    - routing, data-fetching etc.,
- * [we have to follow instructions which were set by NEXT.. 
- *    this means everyone on a team follow those set of rules.. so there won't be errors]
+ * [we have to follow instructions / conventions which were set by NEXT.. 
+ *    .. this means everyone on a team follows same set of rules while developing.. so there won't be errors]
  * 
  * - this allows us to build complex full-stack web-applications and pages!
  * 
@@ -26,7 +26,8 @@
  * >>> NEXT.JS key ingredients!
  * # 1:
  * - SERVER-SIDE RENDERING
- *    - NextJS supports both dynamic and static rendering [can be selected for each route]
+ *    - NextJS supports both dynamic and static rendering 
+ * [can be selected for each route]
  * 
  * [to navigate through an application]
  * # 2:
@@ -51,7 +52,7 @@
  *    - modern way of using NEXT is by using APP-router!
  *      - introduced in NextJS: 13.4 (2023 version)
  *    - recommended for new projects
- *    - implements REACT's full-stack architecture with additional server-comp, server-actions, streaming etc., from NextJS
+ *    - implements REACT's full-stack architecture with additional server-comp, server-actions, streaming etc., from Next.JS
  * 
  * [PROS]
  *    - easy fetching use fetch() right inside comp
@@ -63,12 +64,11 @@
  * 
  * # 2:
  * >>> legacy-NEXT: "PAGES" router
- *    - next-version: 1 (2016)
- *    - simple and easy to learn 
+ *    - introduced in NEXT's-version: 1 (in 2016)
+ *    - simple and easy to learn
  * [cons]
  *    - building simple things like: "layouts" are confusing to implement
  *    - to fetch-data we need to use next-specific APIs: getStaticProps and getServerSideProps
- *    - 
  * 
  * 
  * ! 7. Setting Up a Next.js Project
@@ -117,6 +117,7 @@ export default Home;
  * ---
  * - as per scripts under package.json file
  *    - that is.. 
+ * 
 scripts": {
     "dev": "next dev",      // - we have to use "dev" to start this application!
     "build": "next build",
@@ -138,19 +139,19 @@ scripts": {
  * (Learn: how to add new routes and pages to NEXT.JS application)
  * 
  * - in REACT we used react-router to set up new routes into a single-page-application
- * [which required a lot of boilerplate code]
+ *  [which required a lot of boilerplate code]
  * 
  * - but with NEXT.JS we just need to create folders and files in order to create ROUTES or URLs and OUTPUT (that renders) 
- *    - so again "layout.js" was back.. when we started application NEXT has created it for us!
+ *    - so again "layout.js" was back.. when we started application NEXT created it automatically for us!
  * 
  * ? how to create a route in NEXT: "/cabins" ?
  * ---
- * - create ["cabins"]-folder inside WD 
+ * - create ["cabins"] folder inside WD 
  *    - create a new file in that called "page.js"
  * 
- * * each "page" inside NEXT is a react component
- *    - in order to get an output we need to export a function from that page
- * NOTE: [every page has to be inside a folder]
+ * * each "page.js" inside NEXT is a component
+ *    - in order to get an output we need to export a function from that page.js file
+ * NOTE: [every page.js has to be inside a folder (folder is a route)]
  * 
  * [code]
  * ------
@@ -162,7 +163,7 @@ function Page() {
 export default Page;
  * 
  * - this above returned JSX is a component.. actually a REACT-SERVER-COMPONENT
- *    - whatever JS we write inside a "page"-file will be server-side-rendered
+ *    - whatever JS we write inside a "page.js" file will be server-side-rendered
  * 
  * - use route: "http://localhost:3000/cabins" [FOLDER >>> /cabins]
  * [folder-name has to be exactly same as route "/cabins" that we wanted to create]
@@ -175,6 +176,7 @@ export default Page;
  * 
  * - inside test-folder create a new file: "pages"
  *    - create a component inside pages.js and return JSX!
+ * 
  * [code]
  * ------
 // >>> cabins/test/page.js
@@ -194,23 +196,23 @@ export default Page;
  * [final-code]
  * ------------
 // >>> app/page.js
----
-function Home() {
-  return <h1>The Wild Oasis. Welcome to paradise!</h1>;
+--- 
+function Home() {                                           
+  return <h1>The Wild Oasis. Welcome to paradise!</h1>;     // - main route "/"
 }
 export default Home;
 ------------------------------------
 // >>> app/cabins/page.js
 ---
 function Page() {
-  return <>Cabins Page</>;
+  return <>Cabins Page</>;    // - "/cabins" route
 }
 export default Page;
 ------------------------------------
-// >>> app/account/page.js
+// >>> app/about/page.js
 ---
 function Page() {
-  return <>About Page</>;
+  return <>About Page</>;     // - "about" route
 }
 export default Page;
 ------------------------------------
@@ -222,8 +224,8 @@ function Page() {
 export default Page;
  * 
  * $ SUMMARY
- * - created different routes using just folders [app | cabins | account | about] and files [page.js] in it!
- * - page as file name is same for every route / folder
+ * - created different routes using just folders [app | cabins | account | about] and file [page.js] commonly inside every folder!
+ *    - page as file name is same for every route / folder
  * 
  * ! 9. Navigating Between Pages
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -253,14 +255,14 @@ export default Home;
  * 
  * >>> REACT-Link
  * [we have to install another library "React-Router"]
- * - we used "Link" which was provided by "React-Router-DOM"
- *    - so it usually takes "to" as an attribute to navigate through pages [with specified target as value]
+ * - we used "Link" which was provided by "React-Router-DOM" in react-projects
+ *    - so it usually takes "to" as an attribute to navigate through pages [with specified target / page as it's value]
  * 
  * >>> NEXT-Link
  * [but with NEXT no need of another library.. cause it comes with routing too.. as it is a "FRAMEWORK"]
  * - we have to use "Link" from "next/link"
  *    - it takes "href" as an attribute to specify a "TARGET" route
- * [similar to what we have with "HTML-anchor" tags]
+ * [similar to what we have with "HTML-anchor" tag]
  * 
  * ? how this works behind the scenes?
  * ---
@@ -275,15 +277,15 @@ export default Home;
  *    - will be CACHED inside the browser 
  * [there will not be any re-fetches happen.. when we visit back again!]
  * 
- * ------
  * [code]
+ * ------
  * - as the "Link" has to be specified in each and every folder and "page.js" file inside it!
  *    - create a new folder "comp" and file: "Navigation.js"
  * 
  * - this create a new route in NEXT.JS application [with route OR folder name: "/comp"]
  *    - but as there was no "page.js" inside it.. then it will not create a problem
  * [in case if we have "page.js"-file inside "/comp" folder (by mistake).. it will be a problem.. 
- *    ... so better to follow project-architecture.. that will be discussed in future lectures]
+ *    ... so better to follow project-architecture.. this problem will be discussed in future lectures]
  * 
  * [code]
  * ------
@@ -311,11 +313,12 @@ export default Navigation;
  * ! 10. Creating a Layout
  * -+-+-+-+-+-+-+-+-+-+-+-+
  * (Learn: to add a GLOBAL layout)
- * - every nextjs app or website need to have one global layout [that is called "root-layout"]
+ * - every nextjs app or website need to have one global layout 
+ * [that is called "layout" which is common for every page.js file]
  * 
- * - even if we deleted layout.js from our route folder
- *    - it will be created whenever we started application again!
- * [inside layout.js delete code inside it that was created automatically]
+ * - even if we deleted layout.js from our root folder => app
+ *    - it will be created (automatically) whenever we start application again!
+ * [inside layout.js delete code inside it (if any) that was created automatically before.. (start with fresh file!)]
  * 
  * - this root/global layout wraps entire application
  *    - means it will be applied to every single route inside app
@@ -336,16 +339,17 @@ export default function RootLayout({ children }) {
   );
 }
  * 
- * - creating files with special names [specified by the rules of NextJS]
+ * - creating files with special names [already specified by the rules / convention of NextJS]
  * 
  * - if layout accepts "children" prop then it has to be rendered 
  *    - similar to what we have with react's children-prop rendering
  * 
  * - whatever the current route inside URL will become the children of layout
- *    - if /cabins then /cabins/page.js output will be rendered as children inside root-layout 
+ *    - if /cabins then /cabins/page.js output will be rendered as 'children' inside root-layout 
  *  
  * - to avoid repeated code inside every route
- *    - we created layout.js [that is...] 
+ * [place every common code inside this layout.js-file]
+ * 
  * [repeated_code]
  * ---------------
 --- Home-Page ----
@@ -372,10 +376,11 @@ export default function Page() {
  * 
  * $ Note:
  * - like this <Navigation/> was repeated in every route's OR folder's output-page.js 
- * - that is why we created "Layout.js" where <Navigation/> stays same for every route
+ * - that is why we created "Layout.js" => where <Navigation/> stays same for every route 
+ * (route which is rendered with help of "children")
  * 
  * $ SUMMARY:
- * - every page and layout in this application is called SERVER-COMP
+ * - every page and layout in this application is called SERVER-COMPONENT
  * 
  * * SERVER-COMP
  * - these are the comp which run or rendered on server!
@@ -388,29 +393,33 @@ export default function Page() {
  * ? why do we need react-server-comp ?
  * ---
  * >>> [WKT in REACT]
- * react-UI === fn(state)
  * - client-side rendered react-app: when we update state >>> app re-renders
+ * [so react-UI === fn(state)]
+ * 
  *    [PROS]
  *      - state-updating makes UI interactive
  *      - UI made with multiple comp
- *      - 
+ * 
  *    [CONS]
  *      - require a lot of JS to be downloaded [impacts performance]
  *      - [client-sever-waterfalls] >>> multiple comp on a page need to fetch data one after another
- *      - 
+ * 
  * 
  * >>> [in PHP]
- * UI === fn(data)
  * - when 100% server-side rendered PHP-app >>> it is function of data
+ * [so UI === fn(data)]
+ * 
  *    [PROS]
  *      - easy and fast to fetch all data
  *      - close to data source
  *      - need only 0KB of JS 
+ * 
  *    [CONS]
  *      - NO comp at all!
  * 
  * $ Note
  * - what if a thing that want to be in between UI with fn(data, state)
+ * [what if a library / framework is a mix of => fn(data, state)]
  * 
  * [which provides every advantage of both client and server sides rendering]
  * - that is...
@@ -418,9 +427,9 @@ export default function Page() {
  * * React- Server- Comp
  *    - a new full-stack architecture for react-applications
  *    - SERVER is an integral part of react-component-trees: which is "server comp"
- *    [CONTD..]
+ *    [PAUSED..]
  * 
- * # 1. CLIENT COMP
+ * # 1. REACT / CLIENT COMP
  * - regular comp where.. 
  * 
  * [for interactivity on client-side]
@@ -429,23 +438,23 @@ export default function Page() {
  *    - responsible for interactivity
  * 
  * [client comp are OPT in] 
- * - we need to specifically tell a component that it should be a client-component [if that is what we need]
- *    - created with "use client" directive at top of module!
+ * - we need to specifically tell a component that it should be a client-component [if that is the situation then we need]
+ *    - create a component with "use client" directive at top of module / file!
  * 
- *              COMBINATION (+)
+ *              COMBINATION of (+++)
  * 
  * # 2. SERVER COMP
- * - comp that are only rendered on server
+ * - comps that are only rendered on server
  *    
  * [they fetch data on server]
  * >>> UI === fn(data)
  *    - therefore there will not be interactivity
- *    [no need of state / interactivity] >>> [they do not require JS in downloadable bundle]
+ *      [no need of state / interactivity] >>> [they do not require JS inside downloadable bundle]
  *    - so that we can build backend with react!
  *    - default in apps that we use the RSC architecture (like Next.JS)
  * 
  * * React- Server- Comp
- *    [CONTD..]
+ *    [RESUMED..]
  *    - writing frontend and backend in a way that this feels like regular react
  *    - RSC is NOT active by default in new react-apps [ex: vite-apps]
  * 
@@ -465,17 +474,16 @@ export default function Page() {
  *        |                       |
  *      + ------ +                + ----------- +
  *      |        |                |             |
- *   @ Avatar    |                @ Table       |
- *          ["use client"]          |         ["use client"]
- *              ? DarkMode          |             ? SortBy 
+ *   @ Avatar                     @ Table       
+ *          ["use client"]          |         ["use client"]    -- use this "directive" to indicate a file is a completely regular comp
+ *              ? DarkMode                        ? SortBy 
  *                                @ CabinRow    
  *                  + ------------------ | ------------------- +
  *                  |               ["use client"]             |
  *                  |                 // ? Menu                |    
  *                  |           + -------- + --------- +       |  -  server-client boundary
- *                  |           |          |         |         |  
- *                  | //   ? Duplicate    ? Edit     ? Delete  |  
- *                  |                                          |
+ *                  |           |          |           |       |  
+ *                  |  // ? Duplicate    ? Edit      ? Delete  | 
  *                  + ---------------------------------------- +
  * 
  * $ SKETCH_EXPLANATION
@@ -484,7 +492,8 @@ export default function Page() {
  *    - every client-comp is denoted using "BLUE"
  * 2:
  * - RSC is default set inside NextJS app-router comp
- *    - use "use client" directive on top of every client component file [opt in] 
+ *    - use "use client" directive on top of every client component file 
+ * [if we need to specific client comp]
  * 3:
  * - as "Menu" being a client-component [we need to opt-in for that "use client"]
  *    - but for "Duplicate" "Edit" "Delete" >>> child-comp for "Menu" [we do not need to opt-in]
@@ -534,17 +543,17 @@ export default function Page() {
  *                              FETCHING DATA
  *                              /
  *             SERVER-COMPONENTS
- *                  ↓   ↓          
+ *                  ↓   ↓       ↑  
  * server           ↓   ↓       ↑
- * + -------------- ↓   ↓ -------------- +
+ * + -------------- ↓ - ↓ ------↑------- +
  * client           ↓   ↓       ↑
- *              props   ↓       
+ *              props   ↓       ↑
  *                  ↓   ↓       ↑
  *  CLIENT-COMPONENTS   ↓       re-render
  *          ↑       ↓   ↓       ↑
- *          ↑      display      
+ *          ↑      display      ↑
  *   re-render      ↓   ↓       ↑
- *          ↑       VIEWS       
+ *          ↑       VIEWS       ↑
  *          ↑      /     \      ↑
  *        interaction    navigation
  * 
@@ -608,7 +617,7 @@ export default function Page() {
  * 
  * $ WKT 
  * - each page inside a folder is a SERVER comp
- * [which is default a server comp.. as it has to be rendered on server]
+ * [which is default a server comp.. as it is rendered on server]
  * 
  * [code]
  * ------
@@ -635,8 +644,8 @@ export default async function Page() {
  * - diff with react:
  *    - never used "async" keyword directly on comp's fun
  * 
- * - when logged user-data from API to console
- *    - it returned output inside local-terminal 
+ * - when logged user-data to console
+ *    - it return output inside local-terminal 
  * [which resembles that we are working on server-side instead on client-side] 
  * 
  * - therefore data fetched from server and cached
@@ -650,14 +659,16 @@ export default async function Page() {
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * (Build: counter client component)
  * - as every file is a server comp inside NextJS
- *    - that is why we cannot use react-hooks inside these comp
+ *    - that is why we "CANNOT" use react-hooks inside these comp
  * 
- * - we have to transform server-comp into a client-comp
+ * (if we want to use react-specific-functionality inside server-comp)
+ * - THEN we have to transform server-comp into a client-comp
  *    - so use "use client" on top of any server-comp file which convert that file to client-comp! 
  * ["use client" a declarative approach]
  * 
  * - create a file inside components-fol [by def it is a server comp]
- *    - convert it so that we can use "react hooks" inside that file!
+ *    - convert it so that we can use "react hooks"
+ * 
  * [code]
  * ------
 "use client";       // - adding "use client"
@@ -677,7 +688,7 @@ export default function Counter() {
   );
 }
  * 
- * - after adding "use client" then only we can use react-hooks inside a server transformed client file!
+ * - after adding "use client" then only we can use react-hooks inside a server file transformed to a client file!
  * 
  * $ OBSERVATION
  * - if we slower the network inside "Network-Tab" 
@@ -688,21 +699,21 @@ export default function Counter() {
  * 
  * ! 14. Displaying a Loading Indicator
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * (showing global loading indicator: while pages loading their respective data)
+ * (showing global loading indicator: while pages 'loading' their respective data)
  * 
  * - if there is a tons of data to be loaded on a page.. 
  *    - then showing loading indicator would be a best solution!
  * 
- * - Global-Loading Indicator! [a-file-convention]
+ * - Global-Loading Indicator! [a-NEXTJS-file-convention]
  *    - similar to global layout.js file.. 
  * [these global files are applied to each page in CWD]
  * 
- * >>> [global files need not to be imported by code.. inside each page.js]
- * [they are available for every file >>> global files!]
+ * >>> [global files NEED NOT to be imported by code.. inside each page.js]
+ * [they are available IN COMMON for every file >>> global files!]
  * 
  * - convention to be followed:
  *    - name that file as "loading.js"
- *    - create at root level of project directory!
+ *    - create at root level of project directory! (inside "/app" directly)
  * 
  * [code]
  * ------
@@ -716,7 +727,7 @@ export default function Loading() {
  * [BTS]
  * - BTS, NextJS uses "renderToReadableStream" from react-dom
  * 
- * - "loading.js" file activates STREAMING [but will not be sent at once!]
+ * - "loading.js" file activates STREAMING [but will not be sent at once!] (FILE / ROUTE- level streaming)
  *    - [data will be streamed from server to client!]
  * 
  * $ SUMMARY
@@ -725,11 +736,11 @@ export default function Loading() {
  * 
  * 
  * $ NOTE
- * - we can also activate streaming for individual components using "SUSPENSE"
+ * - we can also activate streaming for individual COMP using "SUSPENSE" (COMP- level streaming)
  * 
  * [ex: if a page has 20+ comp in it and only one of it is fetching data.. 
- *    .. then whole page would be replaced with output of loading.js file]
- * [if we don't want this we could use more granular approach >>> with "SUSPENSE"]
+ *    .. then whole page would be replaced with output of "loading.js" file]
+ * [if we don't want this we could use more granular approach that will stream for comp >>> with "SUSPENSE"]
  * 
  * 
  * ! 15. How RSC Works Behind the Scenes (RSC – Part 2)
@@ -790,7 +801,7 @@ export default function Loading() {
  *   |                          |                                      |               
  *   +---=> CLIENT COMP               VIRTUAL DOM of SC + TREES of CC           complete VIRTUAL-DOM
  *        with "use client"                     [RSC- Payload]
- * 
+ *      on top of every file
  * 
  * - COMPONENT TREE contains both SERVER-COMPONENT [SC] and CLIENT-COMPONENT [CC] instances! 
  * 
@@ -808,7 +819,7 @@ export default function Loading() {
  * ? why ?
  * ---
  * - that is why we cannot use state-like logic inside server comp
- *    [cause logic like useState and useEffect etc., will disappear after rendered]
+ *    [cause logic like 'useState' and 'useEffect' etc., will disappear after rendered]
  * 
  * - AND these REACT-ELEMENTS have to be sent to client later 
  *    - that is why every thing needs to be "SERIALIZABLE" [so fun are not "serialized"]
@@ -843,8 +854,8 @@ export default function Loading() {
  *    * RSC PAYLOAD!
  * 
  * [a Data Structure]
- * - RSC payload is: [virtual DOM of all rendered-server-comp +
- *    - sub trees of un-rendered client-comp]
+ * - RSC payload is: 
+ *    >>> [virtual DOM of all rendered-server-comp + sub trees of un-rendered client-comp]
  * 
  * - this DS will be sent to next step..
  * 
@@ -892,13 +903,6 @@ export default function Loading() {
  * 
  * ! 7. RSC vs. SSR: How are They Related? (RSC – Part 3)
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * 
- * 
- * 
- * 
- * 
- * 
- * 
  * 
  * 
  * 

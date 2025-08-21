@@ -15,13 +15,13 @@
  * -+-+-+-+-+-+-+-+-+-+-+-+-
  * 
  * - follow the database that was created in REACT course while making a staff-facing webpage
- *      - set up accordingly following SUPABASE related videos!
+ *    - set up accordingly following SUPABASE related videos!
  * 
  * - now in NEXT.JS root fol >>> inside "_lib" fol create JS files (file which are not related comp)
- *      - which contains database related logic (similar files which are related to data)
+ *    - which contains database related logic (similar files which are related to data)
  * 
  * >>> configuring same data from SUPABASE
- *      - using same data that was used while making staff-faced web application
+ *    - using same data that was used while making staff-faced web application
  * [steps]
  * - create a file "supabase.js" inside "_lib" fol
  * - install correct supabase - package
@@ -34,13 +34,13 @@ import { createClient } from "@supabase/supabase-js"
 const supabase = createClient()
  * 
  * - inside "createClient" which require "supabase-URL" and "key"
- *      - as next supports ENVIRONMENT VARIABLES
+ *    - as next supports ENVIRONMENT VARIABLES
  * 
  * - create ".env.local" file inside PROJECT folder [but not inside root/app folder]
- *      - where we can specify few KEY-VALUE pairs!
+ *    - where we can specify few KEY-VALUE pairs!
  * 
  * - create constants inside that file (follow capital letter convention)
- *      - SUPABASE_URL => where we store supabase-URL
+ *    - SUPABASE_URL => where we store supabase-URL
  * 
  * ? SUPABASE_URL
  * ---
@@ -52,15 +52,15 @@ const supabase = createClient()
  * - copy Project URL: "https://tnyqooxosavmcfmyoweh.supabase.co"
  * 4:
  * - paste into variable "SUPABASE_URL"
- *      - SUPABASE_URL=https://tnyqooxosavmcfmyoweh.supabase.co
+ *    - SUPABASE_URL=https://tnyqooxosavmcfmyoweh.supabase.co
  * 
  * ? SUPABASE_KEY
  * ---
  * - we had set-up ROW-LEVEL-SECURITY for every data that was present on SUPABASE!
- *      - but without authentication users now cannot access/read data from supabase!
+ *    - but without authentication users now cannot access/read data from supabase!
  * 
  * - so we need to BYPASS that row-level-security [which can only be possible with "service_role" key]
- *      - so navigate to PROJECT-SETTINGS >> and then "API-KEYS" >> and then copy "service_role" key
+ *    - so navigate to PROJECT-SETTINGS >> and then "API-KEYS" >> and then copy "service_role" key
  * [service_role will BYPASS this ROW-LEVEL-SECURITY]
  * 
  * 1:
@@ -71,21 +71,21 @@ const supabase = createClient()
  * - paste into variable "SUPABASE_KEY"
  * 
  * - this key will only stay on server [where no one has access to!]
- *      - if we need to get that same data on client >> then fetch data on server and pass that data to client through PROPS
+ *    - if we need to get that same data on client >> then fetch data on server and pass that data to client through PROPS
  * 
  * $ IMP SUPABASE_KEY
  * - however holds this key gets access to data that was present on SUPABASE
- *      - so with that stored on server.. and make sure that it DO NOT REACH CLIENT 
+ *    - so with that stored on server.. and make sure that it DO NOT REACH CLIENT 
  * [so that database will not be HACKED!]
  * 
  * $ NOTE
  * - what ever constants we store inside .env.local file are not available outside 
- *      - they are protected and secured 
+ *    - they are protected and secured 
  * - but constants which have a prefix "NEXT_PUBLIC_CON_NAME" will be available to public outside
- *      - these are not protected and secured!
+ *    - these are not protected and secured!
  * 
  * - so constants inside .env.local file are only available for local-project
- *      - this file cannot be pushed to GITHUB!
+ *    - this file cannot be pushed to GITHUB!
  * [so we can place some sensitive data like API-KEYS or other secret information in this file]
  * 
  * - therefore constants/variables inside this file will not be leaked 
@@ -299,17 +299,17 @@ export async function deleteBooking(id) {
 }
  * 
  * - inside data-service.js file ... all functions were set to GET / UPDATE / DELETE 
- *      - all these were pre-written by JONAS
+ *    - all these were pre-written by JONAS
  * 
  * - all these functions use "supabase" const that was exported from "supabase.js" file  
  *      [export const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY)]
  * 
  * - this supabase inside supabase.js file uses process.env.SUPABASE_URL and process.env.SUPABASE_KEY
- *      - these were drawn / read out from .env.local file!
+ *    - these were drawn / read out from .env.local file!
  * 
  * $ NOTE
  * - these variables stored inside .env.local file are available on PROCESS 
- *      - that is why they have to be read using "process.env.<var_name>"
+ *    - that is why they have to be read using "process.env.<var_name>"
  * 
  * from next lecture
  *      => we can fetch data and use CRUD operations - accordingly
@@ -320,7 +320,7 @@ export async function deleteBooking(id) {
  * (from now on every operation.. depends upon fn that was written inside "data-service.js" file)
  * 
  * - to getCabins data from SUPABASE!
- *      - use pre-written fns... 
+ *    - use pre-written fns... 
  * [code]
  * ------
 export const getCabins = async function () {
@@ -336,7 +336,7 @@ export const getCabins = async function () {
 };
  * 
  * - so we use this fn to getCabins data for server-components!
- *      - so we can simply use async-await to fetch data from DATABASE!
+ *    - so we can simply use async-await to fetch data from DATABASE!
  * [UPDATED-code]
  * ---
 import CabinCard from "../_components/CabinCard";
@@ -377,8 +377,8 @@ export default async function Page() {
  * - server comp will only return renderable JSX after data is successfully fetched!
  * 
  * - we just needed async-await to fetch data 
- *      - but not any useEffect / state to store data into!
- * [also we don't need any data fetching libraries!]
+ *    - but NOT 'useEffect' OR 'state' to store data into!
+ * [also we DO NOT need any data fetching libraries]
  * 
  * - we used an API layer here which fetches data from supabase API 
  * 
@@ -440,18 +440,18 @@ function CabinCard({ cabin }) {
 export default CabinCard;
  * 
  * - as we are getting images through a URL but not using static-images
- *      - so we cannot use "height / width" properties on those URL fetched images!
+ *    - so we cannot use "height / width" properties on those URL fetched images!
  * 
  * - so for URL fetched images.. we can only use "fill" property
- *      - if we used this it will filled out inside web-page entire viewport width and height!
+ *    - if we used this it will filled out inside web-page entire viewport width and height!
  * 
  * ? IMP error ?
  * ---
  * - whenever we have to optimize an image using NEXT.JS image comp 
- *      - as that image URL inside "src" attr is hosted somewhere inside a DB: that is SUPABASE
+ *    - as that image URL inside "src" attr is hosted somewhere inside a DB: that is SUPABASE
  * 
  * - then we need to add that SUPABASE path to NEXT.JS config file
- *      - HOW CAN WE DO THAT: [check on URL: "https://nextjs.org/docs/messages/next-image-unconfigured-host"]
+ *    - HOW CAN WE DO THAT: [check on URL: "https://nextjs.org/docs/messages/next-image-unconfigured-host"]
  * 
  * - config used in versions prior to 15th ver / latest ver:
 images: {
@@ -500,10 +500,10 @@ export default nextConfig;
 </div>
  * 
  * - wrapped image into a parent comp [here used "div"]
- *      - so now made Image to listen to div's dimensions!
+ *    - so now made Image to listen to div's dimensions!
  * 
  * - now to make Image comp fit the parent div's relative dimensions
- *      - used "object-cover" on 'Image' comp's "className"
+ *    - used "object-cover" on 'Image' comp's "className"
  * 
  *  
  * ! 4. Streaming Route Segments With loading.js File
@@ -511,7 +511,7 @@ export default nextConfig;
  * (here implementing specific "loading.js" file for only "cabins" route)
  * 
  * - every file that require in development was already pre-written inside starter files
- *      - simply copy them into our development folders [into _components fol]
+ *    - simply copy them into our development folders [into _components fol]
  * [so we simply copied comp files: "Spinner" and "SpinnerMini" into out present WD: _components folder]
  * 
  * - but before that make changes inside GLOBAL-loading.js file
@@ -536,20 +536,20 @@ export default function Loading() {
 }
  * 
  * - create a file "loading.js" inside specific "cabins" folder
- *      - this works only for cabins-route but not for other routes!
+ *    - this works only for cabins-route but not for other routes!
  * 
  * ? why to create "loading.js" file 
  * ---
  * - which activates STREAMING 
- *      - to activate STREAMING.. 1st we need JS enabled on browser!
+ *    - to activate STREAMING.. 1st we need JS enabled on browser!
  * 
  * >>> LATER IMPLEMENTATION
  * - on a webpage whenever we need text to be rendered first [text: that does not depend on any DB / supabase]
- *      - and then we could have a loading spinner for only data that has to be fetched from a DB
+ *    - and then we could have a loading spinner for only data that has to be fetched from a DB
  * [this means loading spinner only require for dynamic data fetched from DB but not required for static data]
  * 
- * - we need GRANULAR control only for data that is being fetched from DB / SUPABASE!
- *      - so we need a feature called "SUSPENSE" 
+ * - we need GRANULAR / COMP level controller only for data that is being fetched from DB / SUPABASE!
+ *    - so we need a feature called "SUSPENSE" 
  * [a react-feature]
  * 
  * next lecture... 
@@ -561,40 +561,41 @@ export default function Loading() {
  * (a modern react feature called "REACT-SUSPENSE")
  * 
  * * SUSPENSE
- * - built-in react component we can use to catch/isolate components (or entire subtrees)..
- *      - that are "not ready to be rendered"  
+ * - built-in react component we can use to catch / isolate components (or entire subtrees)..
+ *    - that are "NOT READY TO BE RENDERED"  
  * 
  * [cause of asynchronous work that they were doing]
- * - so we can say that those comp or even entire sub-trees are suspending!
+ * - so we can say that comp OR even entire sub-trees are suspending!
  * 
  * - it catches components that were suspending
- *      - similar to catch block catching errors (inside try-catch block)
+ *    - similar to catch block (inside try-catch block).. for catching errors
  * 
  * ? causes of components to be SUSPENDING
- * ---
- * - both are asynchronous tasks
+ * --- (both are asynchronous tasks)
+ * 
  * 1:
  * - fetching data (with a supported library)
  * 2:
  * - loading additional code (using react's lazy-loading)
- * [mainly suspense is used in the case of data-fetching]
+ * 
+ * * [mainly "SUSPENSE" is used in the case of data-fetching]
  * 
  * [EX:]
  *      APP [eCommerce-APP]
  *       |
  * +---------+---------+
  * |         |         |
- * Nav       |         Filter
+ * Nav       |         Filter (filtering products)
  *          Products        
- *          |       \ 
- *         List      +---=> this fetch data [suspending comp]
+ *           |      \ 
+ *          List     +---=> this fetch data [suspending comp]
  * 
  * >>> so we need to catch PRODUCTS comp using "SUSPENSE"
  * 
  *      APP [eCommerce-APP]
  *       |
- *  +----------------+       +---=> Built-in react-comp
- *  |                |      /   
+ *  +----------------+     +---=> Built-in react-comp
+ *  |                |    /   
  *  Nav           SUSPENSE
  *                  |
  *             +-----------+
@@ -605,7 +606,7 @@ export default function Loading() {
  * 
  * - wrapping an async-comp into SUSPENSE 
  * - this is react native way to support "asynchronous" operations in a "declarative" way 
- * [this does not require isLoading state and render logic]
+ * [this does not require 'isLoading' state and render logic]
  *      >>> declarative means.. can use JSX comp 
  * 
  * ? how does SUSPENSE work
@@ -614,41 +615,41 @@ export default function Loading() {
  * - while rendering.. react finds a comp OR a sub tree that is currently SUSPENDING!
  * 
  * - in which suspense backs up that comp to closest SUSPENSE parent (a-"boundary")
- *      - BOUNDARY: it separates suspending sub-tree from rest of the application!
+ *    - BOUNDARY: it separates suspending sub-tree from rest of the application!
  * 
  * - in this step all the rendered children are "discarded"
- *      - then a FALLBACK comp or JSX will be rendered instead!
+ *    - then a FALLBACK comp or JSX will be rendered instead!
  * 
  *      APP [eCommerce-APP]
  *       |
- *  +----------------+       +---=> Built-in react-comp
- *  |                |      /   
+ *  +----------------+     +---=> Built-in react-comp
+ *  |                |    /   
  *  Nav           SUSPENSE
  *                  |
  *                spinner 
  * 
  * - WHILE asynchronous operations happen in background!
- *      - fallback may be the LOADING sinner!
+ *    - fallback may be the LOADING sinner!
  * 
  * [prev., we have to use isLoading state and render a spinner]
  * - but here we can use REACT-SUSPENSE and render a loading-spinner instead of a async-comp
  * 
  * - once async operations are done!
  * - react attempt to render the subtree which is ready now!
- *      - but under suspense boundary again
+ *    - but under suspense boundary again
  * [sub tree OR comp is rendered using fetched data]
  * 
  * $ IMP NOTE
- * - comp do not automatically suspend just cause of an async operation is happening inside of them!
+ * - comp DO NOT automatically suspend just cause of an async operation is happening inside of them!
  * 
- * - if we make a regular fetch request inside an effect or an event handler
- *      - then a regular React app, the component will not automatically suspend and Suspense won't work
+ * - if we make a regular fetch request inside an effect OR an event handler
+ *    - then a regular React app, the component will not automatically suspend and Suspense won't work
  * [cause]
  * - The whole Suspense architecture is extremely complex.. 
- *      - and manually integrating asynchronous operations with Suspense is very hard.
+ *    - and manually integrating asynchronous operations with Suspense is very hard.
  * [so]
  * - we leave this work to libraries and frameworks
- *      - use something like React Query, remix, or Next.js.
+ *    - use something like React Query, remix, or Next.js.
  * 
  * ? A LOOK BEHIND THE SCENES ?
  * --- 
@@ -687,7 +688,7 @@ export default async function Page() {
 }
  * 
  * - we implemented a loading-spinner which is rendered while data was fetching.. 
- *      - but that will replace and blocks entire UI with spinner!
+ *    - but that will replace and blocks entire UI with spinner!
  * [but]
  * <p className="text-primary-200 text-lg mb-10">  Cozy yet luxurious cabins, located right in the heart of the Italian ... </p>
  * - this part does not depend on data fetching at all!
@@ -752,7 +753,7 @@ export default async function CabinList() {
  * - separating the data-fetching logic into a separate file
  * - importing that new comp into a file where it is needed!
  * - wrapping it with Suspense a-react-comp
- *      - with a fallback as a prop which takes a comp (which has to be loader/spinner)
+ *    - with a fallback as a prop which takes a comp (which has to be loader/spinner)
  * 
  * 
  * ! 7. Dynamic Route Segments: Building the Cabin Page
@@ -795,12 +796,15 @@ export default async function CabinList() {
  * 
  * [code]
  * ------
+// >>> app/cabins/[cabinId]/page.js
+---
 import { getCabin } from "@/app/_lib/data-service";
 import { EyeSlashIcon, MapPinIcon, UsersIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 
 export default async function Page({ params }) {            // - we get access to "params" as it is a dynamic route segment
 
+  // console.log(params)
   const cabin = await getCabin(params.cabinId)      // - params a prop and an object has key >> "folder name: cabinId" and value >> "cabin's child-route with id"
 
   const { id, name, maxCapacity, regularPrice, discount, image, description } =
@@ -809,7 +813,7 @@ export default async function Page({ params }) {            // - we get access t
     <div className="max-w-6xl mx-auto mt-8">
       <div className="grid grid-cols-[3fr_4fr] gap-20 border border-primary-800 py-3 px-10 mb-24">
         <div className="relative scale-[1.15] -translate-x-3">
-          <Image                \
+          <Image                \                                                                               
             src={image}          +---=> // - has to be filled with image's dimensions 
             alt={`Cabin ${name}`} 
             className="object-cover"    // - as the image we get here is URL from DB but not a statically imported image! 
@@ -905,6 +909,7 @@ export async function generateMetadata({ params }) {
  * ! 9. Error Handling: Setting Up Error Boundaries
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
  * (Learn: Global-Error-Boundary >> whenever developers face an error while in development)
+ * 
  * [code]
  * ------
 <li className="flex gap-3 items-center">
@@ -935,7 +940,7 @@ export async function generateMetadata({ params }) {
  * >>> so we have to use new NEXT.JS convention to set-up error-boundary!
  * [steps]
  * - create a convention file called "error.js" inside app-folder
- *    inside root app folder / error.js
+ *    [inside root folder: app/ error.js]
  * 
  * [code]
  * ------
@@ -951,7 +956,7 @@ export default function Error({ error, reset }) {   // #1
         className="inline-block bg-accent-500 text-primary-800 px-6 py-3 text-lg"
         onClick={reset}   
       >             \
-        Try again    +---=> // - reset fn: in this case this does not do anything >> so we can add navigation onclick takes devs to cabins or another route! 
+        Try again    +---=> // - reset fn: in this case this does not do anything >> so we can add NAVIGATION >> onClick takes devs to cabins or another route! 
       </button>
     </main>
   );
@@ -963,16 +968,16 @@ export default function Error({ error, reset }) {   // #1
  * - this works for every component inside an application!
  *    - this works for every error and exceptions which may happen inside an app [but only in rendering]
  * [this means any error inside callback fns will not be caught by this type of error boundary.. 
- *    .. So only rendering errors will be caught right here]
+ *    ..so only rendering errors will be caught right here]
  * 
  * $ NOTE
  * - this "error.js" boundary does not catch errors that might happen in the root layout.js file (app/layout.js)
  * - in order to catch errors inside root-layout.js [we need to create file called global-error.js]
  *    - that will then actually replace the entire layout.
- * >>> no need of this file: "global-error.js"
+ * >>> but NO need of this file (global-error.js) for now 
  * 
  * $ IMP
- * - error boundary need to be a client component! so use "use client" directive
+ * - error boundary need to be a client component! so we used "use client" directive inside top of the respective file!
  * 
  * $ SUMMARY
  * - we could have multiple similar error-boundaries in every route-folder 
@@ -984,20 +989,20 @@ export default function Error({ error, reset }) {   // #1
  * 
  * next lecture...
  * - when user enter a URL that provide an error
- *    - NOT FOUND ERROR
- * => Learn: in next lecture!
+ *    => NOT FOUND ERROR
+ * Learn.. in next lecture!
  * 
  * 
  * ! 10. Error Handling: "Not Found" Errors
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
- * (Learn: how to handle "Not Found Errors" and how to create one!)
+ * (Learn: how to handle "Not Found Errors")
  * - when users tries to access a URL which is not defined / registered inside an application
  * 
  * # 1:   
  * - for ex: when users wants to navigate "/app/test" which is not-defined! 
  * 
- * - so again create a new file called "not-found.js" inside root folder (inside /app)
- *    - which listens to every not-found error inside every folder and file!
+ * - so again create a new file called "not-found.js" inside root folder (inside "/app" folder)
+ *    - which listens to every 'not-found' error inside every folder and file!
  *  
  * [/app/not-found.js]
  * ---
@@ -1026,7 +1031,7 @@ export default function NotFound() {
  * 
  * - but we got an error displayed on webpage which is... 
  *    - ERROR: Cannot read properties of null (reading 'name')
- * [but we need "This page could not be found :("] >>> [which was created by dev]
+ * [but we need "This page could not be found :( "] >>> [which was created by dev]
  * 
  * [so]
  * >>> in NEXT.JS.. not-found page can be shown in 2 ways:
