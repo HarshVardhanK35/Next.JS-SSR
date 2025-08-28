@@ -1,4 +1,4 @@
-// ! PART-02 !
+// ! PART - 02 !
 // ! Overview NEXT with APP router !
 // -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 /**
@@ -747,8 +747,6 @@ export default function Loading() {
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-
  * (Learn: how RSC architecture works BTS [OPTIONAL SECTION] ...
  *    ...follow this only if wanted to know how RSC works! )
- * 
- * ↓ ↑ ← → 
  * 
  * ? quick review of RENDERING in react ?
  * ---
