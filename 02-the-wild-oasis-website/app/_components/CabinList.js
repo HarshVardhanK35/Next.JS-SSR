@@ -9,15 +9,20 @@ export default async function CabinList({ filter }) {
   if (!cabins.length) return null;
 
   let cabinsToDisplay;
-  if (filter === "all") cabinsToDisplay = cabins;
-  if (filter === "small")
+  if (filter === "all") {
+    cabinsToDisplay = cabins;
+  }
+  if (filter === "small") {
     cabinsToDisplay = cabins.filter((cabins) => cabins.maxCapacity <= 3);
-  if (filter === "medium")
+  }
+  if (filter === "medium") {
     cabinsToDisplay = cabins.filter(
       (cabins) => cabins.maxCapacity >= 4 && cabins.maxCapacity <= 7
     );
-  if (filter === "large")
+  }
+  if (filter === "large") {
     cabinsToDisplay = cabins.filter((cabins) => cabins.maxCapacity >= 8);
+  }
 
   return (
     <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 xl:gap-14">

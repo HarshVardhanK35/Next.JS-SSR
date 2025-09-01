@@ -251,6 +251,7 @@ export default async function CabinList({ filter }) {
   );
 }
  * 
+ * 
  * $ NOTE
  * - searchParams cannot be known at runtime of this application.. 
  *    - so whenever we used "searchParams" in a page.js file >> it becomes dynamically rendered page!
@@ -260,6 +261,731 @@ export default async function CabinList({ filter }) {
  *    - so we need to create a component which used to apply interactivity!
  * 
  * >>> create a comp: Filter.js inside [/app/_components] and make it client using: "use client"
+ * [code]
+ * ------
+// >>> /app/_components/Filter.js
+---
+"use client";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
+export default function Filter() {
+  const searchParams = useSearchParams();           // - this gets search-params: "?capacity=all/small/medium/large"
+  const router = useRouter();               // - allows to do programmatic navigation b/w routes
+
+  const pathname = usePathname();                 // - this gets actual pathname: "/cabins"
+
+  function handleFilter(filter) {
+    const params = new URLSearchParams(searchParams);       // - building URL
+    params.set("capacity", filter);
+
+    // - programmatic navigation with router = useRouter()   
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });    // - constructing complete URL and OPTIONAL scroll prop: which ensures page does not scroll back to top
+  }
+
+  return (
+    <div className="border border-primary-800 flex">
+      <button
+        className="px-5 py-2 hover:bg-primary-700"
+        onClick={() => handleFilter("all")}
+      >
+        All cabins
+      </button>
+      <button
+        className="px-5 py-2 hover:bg-primary-700"
+        onClick={() => handleFilter("small")}
+      >
+        1&mdash;3 guests
+      </button>
+      <button
+        className="px-5 py-2 hover:bg-primary-700"
+        onClick={() => handleFilter("medium")}
+      >
+        4&mdash;7 guests
+      </button>
+      <button
+        className="px-5 py-2 hover:bg-primary-700"
+        onClick={() => handleFilter("large")}
+      >
+        8&mdash;12 guests
+      </button>
+    </div>
+  );
+}
+--------------------------------------------- CONNECTED ---------------------------------------------
+// >>> /app/cabins/page.js
+---
+import { Suspense } from "react";
+export const metadata = {
+  title: "Cabins",
+};
+export default function Page({ searchParams }) {
+  const filter = searchParams?.capacity ?? "all";
+  return (
+    <div>
+      <h1 className="text-4xl mb-5 text-accent-400 font-medium">
+        Our Luxury Cabins
+      </h1>
+      <p className="text-primary-200 text-lg mb-10"> ... </p>
+
+      <div className="flex justify-end mb-8">
+        <Filter />                                  // - "Filter" comp was used here!
+      </div>
+      <Suspense fallback={<Spinner />}>
+        <CabinList filter={filter} />
+      </Suspense>
+    </div>
+  );
+}
+ * 
+ * 
+ * $ NOTE
+ * - so whenever we click on respective buttons while applying filters: [all, small, medium, large]
+ *    - we do not get loading spinner.. which has to show user that data is loading in between clicks!
+ * [that is a bad user-experience]
+ * 
+ * ? why there was no SPINNER in between navigation
+ * [wkt]
+ * - which means navigation in NEXT.JS is always wrapped in a REACT-"transition"
+ *    - suspense will not hide already rendered content 
+ * [it will just wait and swap it out as soon as the new content comes in]
+ * 
+ * >>> fixing this error
+ * [code]
+ * ------
+// >>> inside /app/cabins/page.js
+---
+import { Suspense } from "react";
+
+export const metadata = {
+  title: "Cabins",
+};
+
+export default function Page({ searchParams }) {
+  const filter = searchParams?.capacity ?? "all";
+
+  return (
+    <div>
+      <h1 className="text-4xl mb-5 text-accent-400 font-medium">
+        Our Luxury Cabins
+      </h1>
+      <p className="text-primary-200 text-lg mb-10"> ... </p>
+      <div className="flex justify-end mb-8">
+        <Filter />
+      </div>
+      <Suspense fallback={<Spinner />} key={filter}>      // - adding "key" prop
+        <CabinList filter={filter} />
+      </Suspense>
+    </div>
+  );
+}
+ * 
+ * 
+ * - key prop inside <Suspense>.. a unique key  
+ *  [just similar to rendering a list]
+ *    - whenever unique key changes.. fallback will be shown 
+ *      - when component inside suspense is suspending  
+ * 
+ * >>> updated Filter.js component
+ *    - creating new Button component which has repeated code!
+ * 
+ * [code]
+ * ------
+"use client";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
+export default function Filter() {
+  const searchParams = useSearchParams(); 
+  const router = useRouter(); 
+  const pathname = usePathname(); 
+  const activeFilter = searchParams.get("capacity") ?? "all";
+
+  function handleFilter(filter) {
+    const params = new URLSearchParams(searchParams);
+    params.set("capacity", filter);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+  }
+  return (
+    <div className="border border-primary-800 flex">
+      <Button
+        filter="all"
+        handleFilter={handleFilter}
+        activeFilter={activeFilter}
+      >
+        All cabins
+      </Button>
+      <Button
+        filter="small"
+        handleFilter={handleFilter}
+        activeFilter={activeFilter}
+      >
+        1&mdash;3 guests
+      </Button>
+      <Button
+        filter="medium"
+        handleFilter={handleFilter}
+        activeFilter={activeFilter}
+      >
+        4&mdash;7 guests
+      </Button>
+      <Button
+        filter="large"
+        handleFilter={handleFilter}
+        activeFilter={activeFilter}
+      >
+        8&mdash;12 guests
+      </Button>
+    </div>
+  );
+}
+function Button({ filter, handleFilter, activeFilter, children }) {
+  return (
+    <button
+      className={`  px-5 py-2 hover:bg-primary-700 ${
+        filter === activeFilter ? "bg-primary-700 text-primary-50" : ""
+      } `}
+      onClick={() => handleFilter(filter)}
+    >
+      {children}
+    </button>
+  );
+}
+ * 
+ * 
+ * $ RECAP
+ * - we need to share state between CLIENT and SERVER
+ *    - in next we share state by placing it in URL
+ * 
+ * - we used router.replace function inside /app/_components/Filter.js file (we place state in URL using Filter.js file)
+ *    - which helps in client side navigation (without any full-page reloads) 
+ * 
+ * - we receive data from URL into server component (page.js) using 'searchParams' 
+ *    - whenever 'searchParams' changes.. then there will be a navigation.. server component re-renders..
+ * [as searchParams is UNKNOWN at build-time >> it has to be regenerated at run-time (for each new req) >> this makes a page DYNAMIC]
+ * 
+ * FIXING
+ * - add key prop inside "suspense" (if not fallback is not shown >> suspense does not re-render fallback)
+ *    - reason: all page navigation are automatically wrapped inside REACT-transitions in NEXT.JS
+ * 
+ * 
+ * ! 6: Advanced: Server Components in Client Components
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * (rendering server comp inside client comp)
+ * 
+ * [code]
+ * ------
+// >>> /app/account/page.js
+---
+import SelectCountry from "@/app/_components/SelectCountry";
+
+export const metadata = {
+  title: "Update profile"
+}
+
+export default function Page() {
+  // CHANGE
+  const countryFlag = "pt.jpg";
+  const nationality = "portugal";
+
+  return (
+    <div>
+      <h2 className="font-semibold text-2xl text-accent-400 mb-4">
+        Update your guest profile
+      </h2>
+      <p className="text-lg mb-8 text-primary-200">
+        Providing the following information will make your check-in process
+        faster and smoother. See you soon!
+      </p>
+      <form 
+        className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col">
+        ...                                                               // - WHAT IF this form comp needs a state?
+      </form>
+    </div>
+  );
+}
+ * 
+ * 
+ * - this "/app/account/page.js" is a server component and it uses a "form"
+ *    - but what is this "form" needs a 'STATE'..
+ * 
+ * >>> so we created a separate comp for "form" which is transformed into client using "use client" directive!\
+ * ---
+ * (same form element extracted from "/app/account/page.js" and added into newly created comp: "UpdateProfileForm")..
+ * 
+ * - so we created a separate comp "UpdateProfileForm" file which is converted into client comp using "use client"
+ *    - if not converted into client we cannot use "state-logic" inside this new separated form comp
+ * 
+ * [code]
+ * ------
+// >>> /app/_components/UpdateProfileForm
+---
+"use client"
+import SelectCountry from "./SelectCountry";
+
+export default function UpdateProfileForm() {
+  const [count, setCount] = useState()
+  // CHANGE
+  const countryFlag = "pt.jpg";
+  const nationality = "portugal";
+
+  return (
+    <form className="bg-primary-900 py-8 px-12 text-lg flex gap-6 flex-col">
+      <div className="space-y-2">
+        <label>Full name</label>
+        <input
+          disabled
+          className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label>Email address</label>
+        <input
+          disabled
+          className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm disabled:cursor-not-allowed disabled:bg-gray-600 disabled:text-gray-400"
+        />
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <label htmlFor="nationality">Where are you from?</label>
+          <img
+            src={countryFlag}
+            alt="Country flag"
+            className="h-5 rounded-sm"
+          />
+        </div>
+
+        <SelectCountry          // ? this is SERVER component
+          name="nationality"
+          id="nationality"
+          className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
+          defaultCountry={nationality}
+        />
+      </div>
+
+      <div className="space-y-2">
+        <label htmlFor="nationalID">National ID number</label>
+        <input
+          name="nationalID"
+          className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
+        />
+      </div>
+
+      <div className="flex justify-end items-center gap-6">
+        <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
+          Update profile
+        </button>
+      </div>
+    </form>
+  );
+}
+ * 
+ * 
+ * - as it was marked inside client comp: "SelectCountry" was a server comp
+ *    - as it is not possible to render a server comp inside a client comp
+ * 
+ * SelectCountry [a-server-comp]
+ * [code]
+ * ------
+// >>> /app/_components/SelectCountry
+---
+import { getCountries } from '@/app/_lib/data-service';
+
+// Let's imagine your colleague already built this component 😃
+
+export default async function SelectCountry({ defaultCountry, name, id, className }) {
+  const countries = await getCountries();                                                 // - as it is fetching data here.. so it is a server comp
+  const flag =                          
+    countries.find((country) => country.name === defaultCountry)?.flag ?? '';
+
+  return (
+    <select
+      name={name}
+      id={id}
+      // Here we use a trick to encode BOTH the country name and the flag into the value. Then we split them up again later in the server action
+      defaultValue={`${defaultCountry}%${flag}`}
+      className={className}
+    >
+      <option value=''>Select country...</option>
+      {countries.map((c) => (
+        <option key={c.name} value={`${c.name}%${c.flag}`}>
+          {c.name}
+        </option>
+      ))}
+    </select>
+  );
+}
+ * 
+ * 
+ * ? this creates a problem and throws an ERROR!
+ *    - cause client component [/app/_components/UpdateProfileForm] rendering a server component [/app/_components/SelectCountry]
+ * 
+ * only solution:
+ * >>> rendering server comp inside a client comp is by passing server comp as a 'PROP' to client comp
+ * [code]
+ * ------
+// >>> /app/account/page.js
+---
+import SelectCountry from "@/app/_components/SelectCountry";
+import UpdateProfileForm from "@/app/_components/UpdateProfileForm";
+
+export const metadata = {
+  title: "Update profile",
+};
+
+export default function Page() {    // - server comp
+  // CHANGE
+  const countryFlag = "pt.jpg";
+  const nationality = "portugal";
+
+  return (
+    <div>
+      <h2 className="font-semibold text-2xl text-accent-400 mb-4">
+        Update your guest profile
+      </h2>
+
+      <p className="text-lg mb-8 text-primary-200">
+        Providing the following information will make your check-in process
+        faster and smoother. See you soon!
+      </p>
+
+      <UpdateProfileForm>     // - client comp
+        <SelectCountry                // - server comp
+          name="nationality"
+          id="nationality"
+          className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
+          defaultCountry={nationality}
+        />
+      </UpdateProfileForm>
+    </div>
+  );
+}
+ * 
+ * 
+ * - importing server comp [SelectCountry] inside another server comp [/app/account/page.js]
+ *    - server [/app/account/page.js] already creates an instance of server comp [SelectCountry]
+ * 
+ * - that already executed comp instance is passed inside client comp [UpdateProfileForm] as a "PROP"
+ * 
+ * (server comp "/app/account/page.js" has already done it's work >> data fetching, JSX has executed, and at last this becomes a react-element...
+ *    ...this react element now passed into client comp: "UpdateProfileForm" >> client comp does not have to do any work now!)
+ * 
+ * 
+ * ! 7: Data Fetching Strategies for the Reservation Section
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * (Learn: diff strategies to fetch multiple pieces of data on single page)
+ * 
+ * [code]
+ * ------
+// >>> /app/cabins/[cabinId]/page.js
+---
+export async function generateMetadata({ params }) {
+  const cabin = await getCabin(params.cabinId);
+  return {
+    title: `Cabin-${cabin.name}`,
+  };
+}
+
+export async function generateStaticParams() {
+  const cabins = await getCabins();
+  const ids = cabins.map((cabin) => {
+    cabinId: String(cabin.id);
+  });
+  return ids;
+}
+
+export default async function Page({ params }) {
+
+  // const cabin = await getCabin(params.cabinId);                        |
+  // const settings = await getSettings();                                | // - insert here every data fetching logic here [hence this is a server comp] .. 2
+  // const bookedDates = await getBookedDatesByCabinId(params.cabinId);   |
+
+  const { id, name, maxCapacity, regularPrice, discount, image, description } = cabin;
+
+  return (
+    <div className="max-w-6xl mx-auto mt-8">
+      <div className="grid grid-cols-[3fr_4fr] gap-20 border border-primary-800 py-3 px-10 mb-24">
+        <div className="relative scale-[1.15] -translate-x-3">
+          <Image
+            src={image}
+            fill
+            className="object-cover"
+            alt={`Cabin ${name}`}
+          />
+        </div>
+        <div>
+          <h3 className="text-accent-100 font-black text-7xl mb-5 translate-x-[-254px] bg-primary-950 p-6 pb-1 w-[150%]">
+            Cabin {name}
+          </h3>
+          <p className="text-lg text-primary-300 mb-10">
+            <TextExpander>{description}</TextExpander>
+          </p>
+          <ul className="flex flex-col gap-4 mb-7">
+            <li className="flex gap-3 items-center">
+              <UsersIcon className="h-5 w-5 text-primary-600" />
+              <span className="text-lg">
+                For up to <span className="font-bold">{maxCapacity}</span>{" "}
+                guests
+              </span>
+            </li>
+            <li className="flex gap-3 items-center">
+              <MapPinIcon className="h-5 w-5 text-primary-600" />
+              <span className="text-lg">
+                Located in the heart of the{" "}
+                <span className="font-bold">Dolomites</span> (Italy)
+              </span>
+            </li>
+            <li className="flex gap-3 items-center">
+              <EyeSlashIcon className="h-5 w-5 text-primary-600" />
+              <span className="text-lg">
+                Privacy <span className="font-bold">100%</span> guaranteed
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div>
+        <h2 className="text-5xl font-semibold text-center mb-10 text-accent-400">
+          Reserve {name} today. Pay on arrival.
+        </h2>
+        <div className="grid grid-cols-2 border border-primary-800 min-h-[400px]">
+          <DateSelector />
+          <ReservationForm />             // - inserted two more comp here [these are client-components] >> no data fetching has to be done inside these .. 1
+        </div>
+      </div>
+    </div>
+  );
+}
+ * 
+ * 
+ * # at 2
+ * - every data fetching logic needed for comps: [DateSelector, ReservationForm] have been added in this server comp
+ * (as [DateSelector, ReservationForm]) are client comp and can not add fetch logic inside client comps
+ * 
+ * - as there are three OR multiple fetch requests.. they block each other as each request takes some time
+ * 
+ * $ PROBLEM
+ * ---
+// const cabin = await getCabin(params.cabinId);                        |
+// const settings = await getSettings();                                | // - insert here every data fetching logic here [hence this is a server comp] .. 2
+// const bookedDates = await getBookedDatesByCabinId(params.cabinId);   |       // - this creating a blocking WATERFALL
+ * 
+ * 
+ * - waterfalls: fetching different pieces of data which does not depend on each other!
+ *    - as fetch requests are blocking each other!
+ * 
+ * ? USING DIFFERENT WAYS TO FETCH MULTIPLE DATA AT ONCE IN A SINGLE SERVER COMP
+ * ---
+ * [BETTER]
+ * >>> 1. use Promise.all([fetchFn1, fetchFn2, fetchFn3... fetchFn(N)])
+ * (for multiple request fetchers)
+ * 
+ * [code]
+ * ------
+const [cabin, settings, bookedDates] = await Promise.all([
+  getCabin(params.cabinId),
+  getSettings(),
+  getBookedDatesByCabinId(params.cabinId),
+]);
+ * 
+ * 
+ * - this is a BETTER solution but we can follow a BEST one!
+ * 
+ * [BEST]
+ * instead of fetching all data on a parent page >> 
+ * >>> 2. create bunch of different comp >> where each comp fetch it's data...
+ *    >>> ...those components can be streamed in after they become ready! 
+ * 
+ * # 1.
+ * - creating a comp [Reservation.js] with below 'div'
+ * 
+<div className="grid grid-cols-2 border border-primary-800 min-h-[400px]">
+  <DateSelector />
+  <ReservationForm />             // - inserted two more comp here [these are client-components] >> no data fetching has to be done inside these .. 1
+</div>
+ * 
+ * 
+ * - Reservation.js file
+ * [code]
+ * ------
+// >>> /app/_components/Reservation.js 
+---
+export default async function Reservation() {
+  const [settings, bookedDates] = await Promise.all([
+    getSettings(),
+    getBookedDatesByCabinId(params.cabinId),
+  ]);
+
+  return (
+    <div className="grid grid-cols-2 border border-primary-800 min-h-[400px]">
+      <DateSelector />
+      <ReservationForm />
+    </div>
+  );
+}
+-------------------------------------------- CONNECTED --------------------------------------------
+// >>> /app/cabins/[cabinId]/page.js
+---
+<div>
+  <h2 className="text-5xl font-semibold text-center mb-10 text-accent-400">
+    Reserve {name} today. Pay on arrival.
+  </h2>
+  <Reservation />
+</div>
+ * 
+ * 
+ * # 2. 
+ * - activating GRANULAR level streaming with "Suspense"
+ * [code]
+ * ------
+<div>
+  <h2 className="text-5xl font-semibold text-center mb-10 text-accent-400">
+    Reserve {name} today. Pay on arrival.
+  </h2>
+
+  <Suspense fallback={<Spinner />}>   |
+    <Reservation cabin={cabin} />     | // - as this is wrapped inside "Suspense" it will show a loader only for this comp
+  </Suspense>                         |       // - but not for entire comp
+</div>
+ * 
+ * 
+ * $ NOTE
+ * - separated an entire component into separated multiple comps
+ * [code]
+ * ------
+// >>> /app/_components/Cabin.js
+---
+export default function Cabin({ cabin }) {
+  const { id, name, maxCapacity, regularPrice, discount, image, description } =
+    cabin;
+  return (
+    <div className="grid grid-cols-[3fr_4fr] gap-20 border border-primary-800 py-3 px-10 mb-24">
+      <div className="relative scale-[1.15] -translate-x-3">
+        <Image
+          src={image}
+          fill
+          className="object-cover"
+          alt={`Cabin ${name}`}
+        />
+      </div>
+      <div>
+        <h3 className="text-accent-100 font-black text-7xl mb-5 translate-x-[-254px] bg-primary-950 p-6 pb-1 w-[150%]">
+          Cabin {name}
+        </h3>
+        <p className="text-lg text-primary-300 mb-10">
+          <TextExpander>{description}</TextExpander>
+        </p>
+        <ul className="flex flex-col gap-4 mb-7">
+          <li className="flex gap-3 items-center">
+            <UsersIcon className="h-5 w-5 text-primary-600" />
+            <span className="text-lg">
+              For up to <span className="font-bold">{maxCapacity}</span> guests
+            </span>
+          </li>
+          <li className="flex gap-3 items-center">
+            <MapPinIcon className="h-5 w-5 text-primary-600" />
+            <span className="text-lg">
+              Located in the heart of the{" "}
+              <span className="font-bold">Dolomites</span> (Italy)
+            </span>
+          </li>
+          <li className="flex gap-3 items-center">
+            <EyeSlashIcon className="h-5 w-5 text-primary-600" />
+            <span className="text-lg">
+              Privacy <span className="font-bold">100%</span> guaranteed
+            </span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+}
+----------------------------------------------- CONNECTED -----------------------------------------------
+// >>> /app/_components/Reservation.js
+---
+export default async function Reservation({ cabin }) {
+  const [settings, bookedDates] = await Promise.all([
+    getSettings(),
+    getBookedDatesByCabinId(cabin.id),
+  ]);
+  return (
+    <div className="grid grid-cols-2 border border-primary-800 min-h-[400px]">
+      <DateSelector
+        cabin={cabin}
+        settings={settings}
+        bookedDates={bookedDates}
+      />
+      <ReservationForm cabin={cabin} />
+    </div>
+  );
+}
+----------------------------------------------- CONNECTED -----------------------------------------------
+// >>> /app/cabins/[cabinId]/page.js
+---
+export async function generateMetadata({ params }) {
+  const cabin = await getCabin(params.cabinId);
+  return {
+    title: `Cabin-${cabin.name}`,
+  };
+}
+export async function generateStaticParams() {
+  const cabins = await getCabins();
+  const ids = cabins.map((cabin) => {
+    cabinId: String(cabin.id);
+  });
+  return ids;
+}
+
+export default async function Page({ params }) {
+  const cabin = await getCabin(params.cabinId);       
+  return (
+    <div className="max-w-6xl mx-auto mt-8">
+      <Cabin cabin={cabin} />
+      <div>
+        <h2 className="text-5xl font-semibold text-center mb-10 text-accent-400">
+          Reserve {cabin.name} today. Pay on arrival.
+        </h2>
+        <Suspense fallback={<Spinner />}>
+          <Reservation cabin={cabin} />
+        </Suspense>
+      </div>
+    </div>
+  );
+}
+ * 
+ * 
+ * - inside the above component: "/app/cabins/[cabinId]/page.js"
+ *    - cabin data is required inside "/[cabinId]/page.js" and "Reservation" and also inside "Cabin" components
+ * SO
+ * $ REMEMBER
+ * ...
+ * - from CACHE lecture we discussed "Request Memoization"
+ *    - which allows us to do a similar fetch req in multiple elements in a tree.. and it will then gets de-duplicated 
+ * [which is only one request to original data source will be made] 
+ * 
+ * >>> we can use a this above solution
+ *    - but as this is a simple tree.. we fetched data and passed it as a prop
+ * [as these components are only one level deep so it is a simple tree]
+ * 
+ * 
+ * ! 8: Using the Context API for State Management
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * (Learn: how to use CONTEXT API for state management in NEXT.JS application)
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
+ * 
  * 
  * 
  * 
@@ -273,70 +999,6 @@ export default async function CabinList({ filter }) {
  * 
  * ! 2: Blurring the Boundary Between Server and Client (RSC – Part 4)
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- * 
- * ! 2: Blurring the Boundary Between Server and Client (RSC – Part 4)
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- * 
- * ! 2: Blurring the Boundary Between Server and Client (RSC – Part 4)
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- * 
- * ! 2: Blurring the Boundary Between Server and Client (RSC – Part 4)
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
  * 
  * 
  * 
