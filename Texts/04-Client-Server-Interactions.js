@@ -972,172 +972,503 @@ export default async function Page({ params }) {
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * (Learn: how to use CONTEXT API for state management in NEXT.JS application)
  * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * ! 2: Blurring the Boundary Between Server and Client (RSC – Part 4)
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- * 
- * ! 2: Blurring the Boundary Between Server and Client (RSC – Part 4)
- * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
+ * - "DateSelector.js" and "ReservationForm.js" files
+ * [code]
+ * ------
+// >>> /app/_components/DateSelector
+---
+"use client"
+
+function isAlreadyBooked(range, datesArr) {
+  return (
+    range.from &&
+    range.to &&
+    datesArr.some((date) =>
+      isWithinInterval(date, { start: range.from, end: range.to })
+    )
+  );
+}
+export default function DateSelector({ cabin, settings, bookedDates }) {
+
+  const [range, setRange] = useState({ from: undefined, to: undefined });   // - we have state inside only DateSelector.js but not inside ReservationForm.js
+
+  // - CHANGE
+  const regularPrice = 23;
+  const discount = 23;
+  const numNights = 23;
+  const cabinPrice = 23;
+  // - SETTINGS
+  const { minBookingLength, maxBookingLength } = settings;
+
+  return (
+    <div className="flex flex-col justify-between">
+      <DayPicker
+        className="pt-12 place-self-center"
+        mode="range"
+        onSelect={setRange}         // - date has to selected in a range
+        selected={range}
+        min={minBookingLength + 1}
+        max={maxBookingLength}
+        fromMonth={new Date()}
+        fromDate={new Date()}
+        toYear={new Date().getFullYear() + 5}
+        captionLayout="dropdown"
+        numberOfMonths={2}
+      />
+      <div className="flex items-center justify-between px-8 bg-accent-500 text-primary-800 h-[72px]">
+        <div className="flex items-baseline gap-6">
+          <p className="flex gap-2 items-baseline">
+            {discount > 0 ? (
+              <>
+                <span className="text-2xl">${regularPrice - discount}</span>
+                <span className="line-through font-semibold text-primary-700">
+                  ${regularPrice}
+                </span>
+              </>
+            ) : (
+              <span className="text-2xl">${regularPrice}</span>
+            )}
+            <span className="">/night</span>
+          </p>
+          {numNights ? (
+            <>
+              <p className="bg-accent-600 px-3 py-2 text-2xl">
+                <span>&times;</span> <span>{numNights}</span>
+              </p>
+              <p>
+                <span className="text-lg font-bold uppercase">Total</span>{" "}
+                <span className="text-2xl font-semibold">${cabinPrice}</span>
+              </p>
+            </>
+          ) : null}
+        </div>
+        {range.from || range.to ? (
+          <button
+            className="border border-primary-800 py-2 px-4 text-sm font-semibold"
+            onClick={resetRange}
+          >
+            Clear
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+------------------------------------ CONNECTED ------------------------------------
+// >>> /app/_components/Reservation.js
+---
+"use client"
+
+export default function ReservationForm({ cabin }) {
+  //- CHANGE
+  const { maxCapacity } = cabin;
+
+  return (
+    <div className="scale-[1.01]">
+      <div className="bg-primary-800 text-primary-300 px-16 py-2 flex justify-between items-center">
+        <p>Logged in as</p>
+        // <div className='flex gap-4 items-center'>
+        //   <img
+        //     // Important to display google profile images
+        //     referrerPolicy='no-referrer'
+        //     className='h-8 rounded-full'
+        //     src={user.image}
+        //     alt={user.name}
+        //   />
+        //   <p>{user.name}</p>
+        // </div>
+      </div>
+
+      <form className="bg-primary-900 py-10 px-16 text-lg flex gap-5 flex-col">
+        <div className="space-y-2">
+          <label htmlFor="numGuests">How many guests?</label>
+          <select
+            name="numGuests"
+            id="numGuests"
+            className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
+            required
+          >
+            <option value="" key="">
+              Select number of guests...
+            </option>
+            {Array.from({ length: maxCapacity }, (_, i) => i + 1).map((x) => (
+              <option value={x} key={x}>
+                {x} {x === 1 ? "guest" : "guests"}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="observations">
+            Anything we should know about your stay?
+          </label>
+          <textarea
+            name="observations"
+            id="observations"
+            className="px-5 py-3 bg-primary-200 text-primary-800 w-full shadow-sm rounded-sm"
+            placeholder="Any pets, allergies, special requirements, etc.?"
+          />
+        </div>
+        <div className="flex justify-end items-center gap-6">
+          <p className="text-primary-300 text-base">Start by selecting dates</p>
+          <button className="bg-accent-500 px-8 py-4 text-primary-800 font-semibold hover:bg-accent-600 transition-all disabled:cursor-not-allowed disabled:bg-gray-500 disabled:text-gray-300">
+            Reserve now
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+ * 
+ * - from DateSelector.js file.. we need to share a common state: [selected range of dates] in these 2 component-files [DateSelector and ReservationForm]
+ * 
+ * >>> 1. storing state inside URL
+ * (why this isn't possible)
+ * - each time we would select a data range.. will update that page's URL 
+ *    - which in turn create a new NAVIGATION
+ * [new NAVIGATION >> re-renders server-comp >> re-rendering causes re-fetching of data on that page] // => this creates DELAY & EXPENSIVE CALCULATIONS
+ * 
+ * >>> 2. creating a parent comp and storing state inside it: [Reservation.js]..
+ *    >>> ..passing state from that comp to it's children [DateSelector.js and ReservationForm.js]
+ * (why this isn't possible)
+ * - alias LIFTING STATE to a common parent comp // => which takes more time to analyze
+ * 
+ * >>> 3. using React-Context API
+ * [WKT]
+ * - contextAPI only works for client comp
+ * 
+ * # OPTION-3
+ * A. creating context file
+ *    - create "ReservationContext.js" file inside /app/_components
+ * 
+ * B. create, provide and use context
+ * [code]
+ * ------
+// >>> /app/_components/ReservationContext.js
+---
+"use client";
+import { createContext, useContext, useState } from "react";
+
+const ReservationContext = createContext();
+const initialState = { from: undefined, to: undefined };
+
+function ReservationProvider({ children }) {
+  // - STATE
+  const [range, setRange] = useState(initialState);
+  const resetRange = () => setRange(initialState);
+
+  return (
+    <ReservationContext.Provider value={{ range, setRange, resetRange }}>
+      {children}
+    </ReservationContext.Provider>
+  );
+}
+function useReservationContext() {
+  const context = useContext(ReservationContext);
+  if (context === undefined) {
+    throw new Error("Reservation context is used outside Context Provider");
+  }
+  return context;
+}
+export { ReservationProvider, useReservationContext };
+ * 
+ * - "ReservationProvider" has to be used to provide context to client components: "DateSelector" and "ReservationForm" 
+ * 
+ * $ NOTE & REMEMBER
+ * - always place Context-Provider as deep as down inside a REACT-COMPONENT tree!
+ *    [so this does not cause un-necessary re-renders]
+ * --
+ * - but as per the need of our present application.. we need to provide context for every client comp
+ * 
+ * >>> solution
+ * - placing context provider inside layout.js [root/global layout.js] >> [/app/layout.js]  
+ * [code]
+ * ------
+// >>> /app/layout.js
+---
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body
+        className={`${josefin.className} bg-primary-950 text-primary-100
+       min-h-screen flex flex-col`}
+      >
+        <Header />
+        <div className="flex-1 px-8 py-12 grid ">
+          <main className="max-w-7xl mx-auto w-full ">
+            <ReservationProvider>   |
+              {children}            | // - ReservationContext was added here!
+            </ReservationProvider>  |
+          </main>
+        </div>
+      </body>
+    </html>
+  );
+}
+ * 
+ * - as we are wrapping a server comp: {children} [that are every page.js that may get rendered] inside client comp: "ReservationProvider"
+ *    [but this is not allowed as per what we learnt so far..]
+ * - but we know that server has already rendered children: "server-components" [means already executed.. got a react element after execution] 
+ *    - so it is "OKAY" to wrap "server: children" inside "client: ReservationProvider"
+ * 
+ * >>> [some updates]
+ * - added some more files which are dependent on this Context!
+ * [code]
+ * ------
+// >>> /app/_components/ReservationReminder.js
+---
+"use client"
+export default function ReservationReminder() {
+  const { range, resetRange } = useReservationContext();      // - Imported here!
+
+  if (!range.from || !range.to) return null;
+  return (
+    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 py-5 px-8 rounded-full bg-accent-500 text-primary-800 text  font-semibold shadow-xl shadow-slate-900 flex gap-8 items-center">
+      <p>
+        <span>👋</span> Do not forget to reserve your dates <br /> from{" "}
+        {format(new Date(range.from), "MMM dd yyyy")} to{" "}
+        {format(new Date(range.to), "MMM dd yyyy")}
+      </p>
+      <button
+        className="rounded-full p-1 hover:bg-accent-600 transition-all"
+        onClick={resetRange}                                                        // - ReservationContext is required here!
+      >                     
+        <XMarkIcon className="h-5 w-5" />
+      </button>
+    </div>
+  );
+}
+------------------------------------------ CONNECTED ------------------------------------------
+// >>> /app/cabins/page.js
+---
+export default function Page({ searchParams }) {
+  const filter = searchParams?.capacity ?? "all";
+
+  return (
+    <div>
+      <h1 className="text-4xl mb-5 text-accent-400 font-medium">
+        Our Luxury Cabins
+      </h1>
+      <p className="text-primary-200 text-lg mb-10">
+        Cozy yet luxurious cabins, located right in the heart of the Italian
+        Dolomites. Imagine waking up to beautiful mountain views, spending your
+        days exploring the dark forests around, or just relaxing in your private
+        hot tub under the stars. Enjoy nature's beauty in your own little home
+        away from home. The perfect spot for a peaceful, calm vacation. Welcome
+        to paradise.
+      </p>
+      <div className="flex justify-end mb-8">
+        <Filter />
+      </div>
+      <Suspense fallback={<Spinner />} key={filter}>
+        <CabinList filter={filter} />
+        <ReservationReminder />             // - the above client-comp: "ReservationReminder" is rendered here!
+      </Suspense>
+    </div>
+  );
+}
+------------------------------------------ UPDATED-DateSelector-FILE ------------------------------------------
+updated DateSelector file after adding context
+// >>> /app/_components/DateSelector
+---
+"use client";
+
+function isAlreadyBooked(range, datesArr) {
+  return (
+    range.from &&
+    range.to &&
+    datesArr.some((date) =>
+      isWithinInterval(date, { start: range.from, end: range.to })
+    )
+  );
+}
+
+export default function DateSelector({ cabin, settings, bookedDates }) {
+  const { range, setRange, resetRange } = useReservationContext();    // - imported Context here!
+
+  // - CHANGE
+  const regularPrice = 23;
+  const discount = 23;
+  const numNights = 23;
+  const cabinPrice = 23;
+
+  // - SETTINGS
+  const { minBookingLength, maxBookingLength } = settings;
+
+  return (
+    <div className="flex flex-col justify-between">
+      <DayPicker
+        className="pt-12 place-self-center"
+        mode="range"
+
+        onSelect={setRange}   |
+        selected={range}      | .. // - used context here!
+
+        min={minBookingLength + 1}
+        max={maxBookingLength}
+        fromMonth={new Date()}
+        fromDate={new Date()}
+        toYear={new Date().getFullYear() + 5}
+        captionLayout="dropdown"
+        numberOfMonths={2}
+      />
+      <div className="flex items-center justify-between px-8 bg-accent-500 text-primary-800 h-[72px]">
+        <div className="flex items-baseline gap-6">
+          <p className="flex gap-2 items-baseline">
+            {discount > 0 ? (
+              <>
+                <span className="text-2xl">${regularPrice - discount}</span>
+                <span className="line-through font-semibold text-primary-700">
+                  ${regularPrice}
+                </span>
+              </>
+            ) : (
+              <span className="text-2xl">${regularPrice}</span>
+            )}
+            <span className="">/night</span>
+          </p>
+          {numNights ? (
+            <>
+              <p className="bg-accent-600 px-3 py-2 text-2xl">
+                <span>&times;</span> <span>{numNights}</span>
+              </p>
+              <p>
+                <span className="text-lg font-bold uppercase">Total</span>{" "}
+                <span className="text-2xl font-semibold">${cabinPrice}</span>
+              </p>
+            </>
+          ) : null}
+        </div>
+        {range.from || range.to ? (
+          <button
+            className="border border-primary-800 py-2 px-4 text-sm font-semibold"
+            onClick={resetRange}
+          >                   \
+            Clear              +---=> // - used imported 'context' here! 
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+ * 
+ * $ REMEMBER:
+ * - easily remember that there are two different components: "CLIENT" and "SERVER"
+ *    - CONTEXT that was created in this lecture is used inside only CLIENT components.. 
+ *        - ..so whenever context changes.. CLIENT-comps under CONTEXT-PROVIDER changes!
+ * 
+ * 
+ * ! 9: Creating an API Endpoint With Route Handlers
+ * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * (Learn: How to build an API endpoint from NEXT.JS using feature: "Route-Handlers")
+ * 
+ * $ NOTE
+ * - while using "APP" router in NEXT.JS there is no need of building "API-endpoint"
+ *    - as it is only required inside in previous NEXT.JS versions where "PAGE" routers been used
+ * 
+ * ? WHY API endpoints are required
+ * - to mutate data
+ *    - inside APP router.. we use server actions 
+ *    - but in PAGES router.. we had to use API endpoints
+ * 
+ * ? HOW: to create API endpoints >> we have to use "ROUTE-HANDLERS"
+ * --
+ * [as NEXT is full of conventions.. it is required to follow another convention to create API endpoints with route.js file]
+ * 
+ * - so create another file "route.js" 
+ *    - can be placed inside any folder >> that should not have page.js file
+ * (means.. when req is sent to URL corresponding to this ROUTE-HANDLER >> HTML should NOT be returned.. 
+ *    .. only JSON data has to be returned after execution)
+ * 
+ * [CAUSE]
+ * - when there is page.js.. it returns HTML >> but route handler returns JSON data.. this create a "CONFLICT"
+ * 
+ * [STEPS]
+ * - 1. create a folder: "api" inside /app directly and create a "route.js" inside /app/api [but not page.js] 
+ * - 2. inside this file >> export one or more functions which correspond to HTTP requests [GET / POST / PUT / PATCH / DELETE] 
+ * EX: 
+ *    export async function GET() {}
+ *    export async function PUT() {}
+ *    export async function POST() {}
+ *    export async function PATCH() {}
+ *    export async function DELETE() {}
+ * 
+ * - 3. to send a response and check out the request.. these route handlers use WEB-STANDARDS such as [Request and Response]
+ *    - these are not NEXT.JS features but normal JS web standards such as: Response.json()
+ * [code]
+ * ------
+export async function GET() {
+  return Response.json({ test: "test" });
+}
+ * 
+ * 
+ * >>> A. using normal segmented URL: "localhost:3000/api"
+ * - when requested for "localhost:3000/api"
+ *    - we will get response in JSON format: { "test": "test" }
+ * 
+ * [when URL contains a dynamic ID]
+ * >>> B. using dynamic segmented URL: "localhost:3000/api/cabins/90"
+ * 
+ * B.1
+ * - create a folder /api inside /app 
+ *    - then inside /app/api create /cabins folder 
+ *        - then inside /app/api/cabins create dynamic segment folder /[cabinID]
+ * complete folder: "/app/api/cabins/[cabinId]" and place the route.js file inside this routed-folder
+ * [code] 
+ * ------
+// >>> /app/api/cabins/[cabinId]
+---
+export async function GET() {
+  return Response.json({ test: "test" });
+}
+ * 
+ * - so when user requests to URL: "localhost:3000/api/cabins/90"
+ *                                 +-------------+----+------+---+
+ *                                    |             |     |     |
+ *                                  /app          /api    |   [cabinID]
+ *                                                     /cabins
+ * - response generated: { "test": "test" }
+ * 
+ * - this route-handler also gets access to: "request" and "{params}" objects
+ * [code]
+ * ------
+export async function GET( request, {params} ) {}
+ * 
+ * - on logging request and params to console.. we get request object with headers and parameters passed inside URL 
+ * [if URL is: "localhost:3000/api/cabins/90".. then params: 90]
+ * 
+ * $ SUMMARY:
+ * - creating own API endpoint is best cause we don't have to expose SUPABASE API endpoint to these affiliates
+ * - we can keep our API keys hidden [this way of creating API endpoints helps us to abstract supabase API data]
+ * 
+ * [final-code]
+ * ------------
+// >>> /app/api/cabins/[cabinId]/route.js
+---
+export async function GET(request, { params }) {      // - we don't provide custom names but only HTTP verbs: "GET", "POST", "PUT", etc.,
+  const { cabinId } = params;
+
+  try {
+    const [cabin, bookedDates] = await Promise.all([
+      getCabin(cabinId),
+      getBookedDatesByCabinId(cabinId),
+    ]);
+
+    return Response.json({ cabin, bookedDates });
+    //
+  } catch (err) {
+    return Response.json({ message: "Cabin not found!" });
+  }
+}
+ * 
+ * - this is how we create own custom END-POINTS in NEXT.JS
+ * - but we don't need these cause we have SERVER-ACTIONS 
+ * 
+ * 
+ *  
+ * ! COMPLETED !
+ * 
+ * next section
+ * => Authentication
  * 
  */
