@@ -51,7 +51,7 @@
  * >>> [CSR]
  *      - requested HTML will be rendered on CLIENT [using JS]
  *          ex: we use REACT.JS
- * ? [CONS]
+ * $ [CONS]
  *      - SLOWER INITIAL PAGE LOADING..
  *          - LARGE javascript bundle needs to be downloaded before app starts!
  *          - data is fetched after components MOUNTING! 
@@ -60,7 +60,7 @@
  *          - search engines may find blank page while indexing pages.. 
  *          [cause >>> content is not rendered until JS is executed and data is fetched!]
  * + ----------------------------------- +
- * ? [PROS]
+ * $ [PROS]
  *      - HIGHLY INTERACTIVE..
  *          - all code and content has loaded already!
  * 
@@ -78,7 +78,7 @@
  *      - HTML is generated on a web-server [then it sends that generated HTML to client.. on req]
  *        [work of rendering from user's to dev's computer.. computer that is under dev control]
  *          ex: use NEXT.JS
- * ? [PROS]
+ * $ [PROS]
  *      - FASTER INITIAL PAGE LOADING..
  *          - LESS js needs to be downloaded and executed
  *          - data is fetched before HTML is rendered [as it is generated on server]
@@ -89,7 +89,7 @@
  *      - CONTENT DRIVEN websites where SEO is ESSENTIAL:
  *          - such as: e-Commerce, blogs, news, marketing websites etc.,
  * + ----------------------------------- +
- * ? [CONS]
+ * $ [CONS]
  *      - LESS INTERACTIVE.. 
  *          - pages might be downloaded on DEMAND and require full page reloads (may not have SPA)
  *          [navigate page-page >> require server to render a new page each time >> leads full page reloading]
@@ -97,7 +97,7 @@
  * + ======================================================================================================== + 
  * >>> [TYPES]
  * ? TWO types of SSR ?
- * 
+ * ---
  * - "STATIC" site generation.. 
  *      - HTML generated at build-time 
  * [once dev finished developing site.. they export into static HTML, CSS, JS files.. 
@@ -114,7 +114,8 @@
  * 
  * >>> [TIMELINE]
  * ---
- * ? [CSR]       
+ * ? [CSR]
+ * ---
  *                                                                may use diff server to fetch-data
  *                                                                      /
  * SERVER +----- EMPTY-PAGE ----------------------------- FETCHES data ------------------------------------
@@ -123,6 +124,7 @@
  * CLIENT +----------- DOWNLOADS JS BUNDLE => RENDER-spinner  ---------- RENDER-APP-with-DATA -------------
  * 
  * ? [SSR]
+ * ---
  * 
  * SERVER +----- FETCHES data => RENDER-APP with DATA -----------------------------------------------------
  *                                          \               
@@ -131,6 +133,7 @@
  * CLIENT +--------------------------------- CLIENT / BROWSER ----- DOWNLOADS JS bundle => HYDRATION ------
  * 
  * ? what about interactivity in SSR ?
+ * ---
  * - the whole website that is sent to client contains JS bundle
  * - that bundle gets downloaded and executed 
  * - and then happens a process called.. 

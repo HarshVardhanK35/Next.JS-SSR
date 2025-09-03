@@ -182,10 +182,12 @@ export default function SideNavigation() {
  *    - as this "searchParams" only work inside page-components but not inside arbitrary server components
  * 
  * ? 1. Page components ?
+ * ---
  * - these are directly tied to a route [ex: /cabins, /account] inside /app directory [comp: page.js]
  * ex: app/cabins/page.js
  * 
  * ? 2. Arbitrary server components ?
+ * ---
  * [components which are not page.js]
  * - these are regular server components we create anywhere inside app/ (but not named page.js) [comp: not page.js]
  * ex: app/_components/CabinList.js 
@@ -344,6 +346,7 @@ export default function Page({ searchParams }) {
  * [that is a bad user-experience]
  * 
  * ? why there was no SPINNER in between navigation
+ * ---
  * [wkt]
  * - which means navigation in NEXT.JS is always wrapped in a REACT-"transition"
  *    - suspense will not hide already rendered content 
@@ -618,7 +621,8 @@ export default async function SelectCountry({ defaultCountry, name, id, classNam
  * 
  * 
  * ? this creates a problem and throws an ERROR!
- *    - cause client component [/app/_components/UpdateProfileForm] rendering a server component [/app/_components/SelectCountry]
+ * ---
+ * - cause client component [/app/_components/UpdateProfileForm] rendering a server component [/app/_components/SelectCountry]
  * 
  * only solution:
  * >>> rendering server comp inside a client comp is by passing server comp as a 'PROP' to client comp
@@ -1367,12 +1371,13 @@ export default function DateSelector({ cabin, settings, bookedDates }) {
  *    - as it is only required inside in previous NEXT.JS versions where "PAGE" routers been used
  * 
  * ? WHY API endpoints are required
+ * ---
  * - to mutate data
  *    - inside APP router.. we use server actions 
  *    - but in PAGES router.. we had to use API endpoints
  * 
  * ? HOW: to create API endpoints >> we have to use "ROUTE-HANDLERS"
- * --
+ * ---
  * [as NEXT is full of conventions.. it is required to follow another convention to create API endpoints with route.js file]
  * 
  * - so create another file "route.js" 

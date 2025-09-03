@@ -70,6 +70,7 @@
  * 
  * ////////////////////////////////////////////
  * ? when does NEXT switches STATIC to DYNAMIC
+ * ---
  * (automatic process)
  * 
  * - devs can't choose how a route to be [STATIC or DYNAMIC]
@@ -298,7 +299,7 @@ Route (app)                              Size     First Load JS
  * - this time with "generateStaticParams" fn all DYNAMIC routes are converted to STATIC routes manually!
  * 
  * ////////////////////////////
- * ? but in before observation
+ * $ but in before observation
 Route (app)                              Size     First Load JS
 ┌ ○ /                                    526 B           101 kB
 ├ ○ /_not-found                          155 B          87.2 kB
@@ -464,6 +465,7 @@ export default nextConfig;
  *    three of them store data on server.. those are: 
  * 
  * ? [SERVER-SIDE CACHING]
+ * ---
  * 1: 
  * # request memoization  
  * ---
@@ -557,6 +559,7 @@ noStore()
  * 
  * ---------------------------------------------------------------------------------------------------------------------------------
  * ? [CLIENT-SIDE CACHING]
+ * ---
  * 4: 
  * # router cache
  * ---

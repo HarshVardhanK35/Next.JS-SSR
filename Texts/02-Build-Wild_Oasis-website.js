@@ -633,6 +633,7 @@ export default function Page() {
  * 
  * - steps:
  * ? image need to be inside container
+ * ---
  * 1: size that container (instead of sizing image >>> make parent: relative)
  * 2: make that image fit / fill inside that container (then occupies size specified)
  *    2.1: [using object set to cover: "object-cover"]

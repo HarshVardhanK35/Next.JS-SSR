@@ -47,6 +47,7 @@
  * [ex: image and font optimization, tools to improve SEO, etc.,]
  * 
  * ? two FLAVOURS of next.js: "APP" and "PAGES" router
+ * ---
  * # 1: 
  * >>> modern-NEXT.JS: "APP" router
  *    - modern way of using NEXT is by using APP-router!
@@ -187,9 +188,9 @@ function Page() {
 
 export default Page;
  * 
- * ? http://localhost:3000/cabins/test ?
- * |                     |       |     |
- * + ------------------- + ----- + --- +
+ *    http://localhost:3000/cabins/test
+ *      |               |       |     |
+ * =--+---------------- + ----- + --- +
  *           |               |      |
  *          APP           CABINS   TEST
  * 
