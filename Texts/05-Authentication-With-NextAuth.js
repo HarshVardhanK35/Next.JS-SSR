@@ -377,35 +377,157 @@ export default async function Reservation({ cabin }) {
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
  * (Learn: middleware.. one imp feature needed for implementing authorization)
  * 
- * ? How middleware works in NEXT.JS
- * ---
- * 
  * * MIDDLEWARE
  * - type of function, that lies between request and response
  * 
+ * ? How middleware works in NEXT.JS
+ * ---
+ * - so next.js middleware runs a code after incoming request and before sending o/p OR response
+ * [a chunk of code inside every route-code that is every page.js comp]
+ * 
+ * $ IMP 
+ * - by def., middleware runs before every route in a next.js application
+ *    - we have to use MATCHER.. to customize middleware to work for only specific middlewares
+ * --
+ * - only one middleware function: needs to be exported from middleware.js file inside project's root folder
+ * [so it is clear that this file: "middleware.js" has to be placed inside root folder of a project/app]
+ * 
+ * ? why do we need a middleware
+ * ---
+ * - reads incoming cookies and headers and also sets new cookies and headers
+ * [this enables us]
+ *    - authentication and authorization
+ *    - server-side analytics
+ *    - redirects based on geo-location
+ *    - A/B testing ???
+ * 
+ * >>> always a middleware has to produce a response 
+ * [happens in 2 ways]
+ * 
+ * # WAY 1. 
+ * - rewrites or redirects to some route
+ *    [means.. middlewares run before routes are rendered]
+ * 
+ * # WAY 2. 
+ * - directly sends a JSON response to client
+ * [we can still read & set cookies + headers but..]
+ *    - route will not be rendered and it is BYPASSED! [.. in this case]
+ * (this way is worth only when we want to send JSON data)
  * 
  * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * 
- * ! 2. Protecting Routes With NextAuth Middleware
+ * ! 5. Protecting Routes With NextAuth Middleware
  * -+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+ * (USE: middleware provided by NextAuth in order to protect GUEST-area routes from un-authorized users)
+ * 
+ * - as next.js is full of conventions >>> we need to create a file for middleware inside project-root-folder.. 
+ *    - and export it inside which route that needs this middleware [file name: middleware.js]
+ * [not inside "/app" but inside "/project-name/"] >>> [that is on same level of /app-folder]
+ * 
+ * >>> FIRST: creating our own middleware 
+ * inside file: middleware.js
+ * - function name shall also be "middleware"
+ * 
+ * - an example to redirect user to "/about".. when user requests matched URLs
+ * [code]
+ * ------
+//>>> <project-name> /middleware.js
+---
+import { NextResponse } from "next/server";
+
+export function middleware(request) { 
+  return NextResponse.redirect(new URL("/about", request.url))      // - user will be redirected to /about
+}
+export const config = {
+  matcher: ["/account", "/cabins"]      // - when user requests for these URLs
+}
+ * 
+ * - this is not a NEXT-middleware
+ *    - this is written by developers.. 
+ * 
+ * ///////////////////////////////////////////////////////////////////////////////
+ * >>> working on user-authorization >>> using middleware of NEXT-AUTH
+ * [code that do not allow un-authorized users to visit route: "/account" that is guest-area]
+ * 
+ * - for this we have to use "auth-function" that was exported from "/app/_lib/auth.js" file into middleware.js file that we just created!
+ * [from below file]
+ * [code]
+ * ------
+const authConfig = {
+  providers: [
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    }),
+  ],
+};
+
+export const {
+  auth,                         // - that was exported from here!  
+  handlers: { GET, POST },
+} = NextAuth(authConfig);
+ * 
+ * 
+ * - import and export "auth" inside middleware.js file
+ * [code]
+ * ------
+// >>> /middleware.js
+---
+import { auth } from "./app/_lib/auth";
+export const middleware = auth;         // - import and export auth from this file
+
+export const config = {
+  matcher: ["/account"],    // - protecting "/account" from un-auth users 
+};
+ * 
+ * - export it using the name of middleware  
+ * 
+ * $ EXPLANATION
+ * - we are exporting auth as "middleware" which protects only "/account" route 
+ * 
+ * >>> also configure "/app/_lib/auth.js" file
+ * [add "callbacks" inside auth.js file as a configuration]
+ * 
+ * [code]
+ * ------
+import NextAuth from "next-auth";
+import Google from "next-auth/providers/google";
+
+const authConfig = {
+  providers: [
+    Google({
+      clientId: process.env.AUTH_GOOGLE_ID,
+      clientSecret: process.env.AUTH_GOOGLE_SECRET,
+    }),
+  ],
+  callbacks: {                          |
+    authorized({ auth, request }) {     | // - addons that were added!
+      if (auth?.user) return true       |
+      return false
+    },
+  },
+};
+
+export const {
+  auth,
+  handlers: { GET, POST },
+} = NextAuth(authConfig);
+ * 
+ * - this callback gets the current authorized user from "auth" >>> authorized({ auth, request }) { ... }
+ * - request is the object that user has requested to: a URL
+ * 
+ * $ EXPLANATION
+ * - next-auth calls this authorized(): function..
+ *    - whenever a user requests for protecting routes that is "/account"
+ * 
+ * - so middleware that was exported will only work and protects "/account" route 
+ *    - so when user hits route: "/account" then "authorized" callback will be called!
+ * 
+ * - then authorized gets access to {auth, request} >>> current session and request-object
+ *    - this authorized callback checks if there is user.. returns true >>> if not.. returns false
+ * 
+ * this now protects "/account" route and redirects user to "/signin" route to let user to sign in into his account
+ * 
+ * 
  * 
  * 
  * ! 2. Protecting Routes With NextAuth Middleware
